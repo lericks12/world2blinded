@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>World2Blinded</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init({ publicKey: "FcUAmlDy_1iSZmOLa" });
+    })();
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+
+/* ==================== INDEX STYLES ==================== */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050505; --card: #0A0A0A; --gold: #D4AF37;
+      --gold-light: #F1D06E; --gold-dark: #B8960C;
+      --fg: #EDEDED; --muted: hsl(240 5% 65%);
+      --border: rgba(255,255,255,0.05); --border-gold: rgba(212,175,55,0.2);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Manrope', sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Playfair Display', serif; }
+    ::selection { background: rgba(212,175,55,0.3); color: var(--fg); }
+    ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #27272A; } ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    .gold-gradient { background: linear-gradient(to right, #D4AF37, #F1D06E, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .gold-line { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+    /* ── LANG SWITCHER ── */
+    .lang-switcher {
+      display: flex; align-items: center; gap: 0;
+      border: 1px solid rgba(212,175,55,0.25); overflow: hidden;
+    }
+    .lang-btn {
+      background: transparent; border: none; color: var(--muted);
+      font-family: 'Manrope', sans-serif; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.1em; padding: 0.35rem 0.7rem; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .lang-btn.active { background: var(--gold); color: #050505; }
+    .lang-btn:not(.active):hover { color: var(--gold); }
+    .lang-divider { width: 1px; height: 100%; background: rgba(212,175,55,0.25); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 80px;
+      backdrop-filter: blur(16px); background: rgba(5,5,5,0.85);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: var(--gold); text-decoration: none; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+    .nav-login { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-login:hover { color: var(--gold); }
+    .btn-primary {
+      background: var(--gold); color: #050505; border: none;
+      padding: 0.7rem 1.6rem; font-family: 'Manrope', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(212,175,55,0.25); }
+    .btn-secondary {
+      background: transparent; color: var(--gold); border: 1px solid rgba(212,175,55,0.3);
+      padding: 0.7rem 1.6rem; font-family: 'Manrope', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.6); }
+
+    /* ── HERO ── */
+    #hero { min-height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; padding-top: 80px; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(212,175,55,0.10) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(241,208,110,0.08) 0%, transparent 60%), #050505; }
+    .hero-pulse1 { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, transparent 60%, rgba(212,175,55,0.1) 100%); animation: heroPulse 6s ease-in-out infinite; }
+    .hero-pulse2 { position: absolute; top: 25%; right: 0; width: 600px; height: 600px; background: rgba(212,175,55,0.15); border-radius: 50%; filter: blur(150px); animation: heroPulse 8s ease-in-out infinite; }
+    .hero-pulse3 { position: absolute; bottom: 0; left: 25%; width: 500px; height: 500px; background: rgba(241,208,110,0.10); border-radius: 50%; filter: blur(120px); animation: heroPulse 7s ease-in-out 2s infinite; }
+    @keyframes heroPulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+    .hero-lines { position: absolute; inset: 0; opacity: 0.3; }
+    .hero-line { position: absolute; top: 0; width: 1px; height: 100%; background: linear-gradient(to bottom, transparent, rgba(212,175,55,0.8), transparent); animation: floatLine 8s ease-in-out infinite; }
+    .hero-line:nth-child(1) { left: 25%; }
+    .hero-line:nth-child(2) { left: 50%; opacity: 0.5; animation-delay: 2s; }
+    .hero-line:nth-child(3) { left: 75%; animation-delay: 4s; }
+    @keyframes floatLine { 0%, 100% { transform: translateY(0); opacity: 0.2; } 50% { transform: translateY(-30px); opacity: 0.5; } }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,5,5,0.6) 0%, transparent 40%, rgba(5,5,5,1) 100%); }
+    .hero-content { position: relative; z-index: 1; max-width: 860px; padding: 0 2rem; }
+    .hero-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.8rem; animation: fadeUp 0.8s ease 0.1s both; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 800; line-height: 1.05; margin-bottom: 0.8rem; animation: fadeUp 0.8s ease 0.25s both; }
+    .hero-subtitle { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 3vw, 2.2rem); font-style: italic; font-weight: 400; color: rgba(237,237,237,0.9); margin-bottom: 1.5rem; animation: fadeUp 0.8s ease 0.4s both; }
+    .hero-desc { font-size: clamp(0.95rem, 1.5vw, 1.1rem); color: var(--muted); line-height: 1.8; max-width: 580px; margin: 0 auto 2.5rem; animation: fadeUp 0.8s ease 0.5s both; }
+    .hero-btns { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; animation: fadeUp 0.8s ease 0.65s both; }
+    .btn-ghost-link { color: var(--muted); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+    .btn-ghost-link:hover { color: var(--gold); }
+    .hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); z-index: 1; animation: fadeUp 1s ease 1s both; }
+    .scroll-mouse { width: 26px; height: 44px; border: 2px solid rgba(212,175,55,0.3); border-radius: 13px; margin: 0 auto; display: flex; justify-content: center; padding-top: 6px; }
+    .scroll-dot { width: 4px; height: 8px; background: var(--gold); border-radius: 2px; animation: scrollDot 1.6s ease infinite; }
+    @keyframes scrollDot { 0% { opacity:1; transform:translateY(0); } 100% { opacity:0; transform:translateY(14px); } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(25px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── STATS ── */
+    #stats { padding: 5rem 2rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stats-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem; text-align: center; }
+    .stat-block { padding: 1.5rem; transition: transform 0.3s; }
+    .stat-block:hover { transform: translateY(-4px); }
+    .stat-icon { color: var(--gold); margin-bottom: 1rem; display: flex; justify-content: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem,4vw,3.5rem); font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 0.5rem; }
+    .stat-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── SERVICES ── */
+    #services { padding: 6rem 2rem; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 1rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3rem); font-weight: 700; margin-bottom: 1.2rem; }
+    .services-bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.2rem; }
+    .svc-card { background: var(--card); border: 1px solid var(--border); padding: 2.2rem; position: relative; overflow: hidden; transition: border-color 0.5s, box-shadow 0.5s, transform 0.4s; cursor: pointer; text-decoration: none; color: var(--fg); display: block; }
+    .svc-card:hover { border-color: rgba(212,175,55,0.5); box-shadow: 0 0 30px rgba(212,175,55,0.08); transform: translateY(-4px); }
+    .svc-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); opacity: 0; transition: opacity 0.5s; }
+    .svc-card:hover::before { opacity: 1; }
+    .svc-card.wide { grid-column: span 7; }
+    .svc-card.narrow { grid-column: span 5; }
+    .svc-card-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
+    .svc-icon-box { width: 52px; height: 52px; border: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; justify-content: center; color: var(--gold); transition: background 0.3s; }
+    .svc-card:hover .svc-icon-box { background: rgba(212,175,55,0.08); }
+    .svc-arrow { color: var(--muted); transition: color 0.3s, transform 0.3s; font-size: 1.1rem; }
+    .svc-card:hover .svc-arrow { color: var(--gold); transform: translate(3px,-3px); }
+    .svc-card h3 { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem,2vw,1.8rem); font-weight: 600; margin-bottom: 1rem; transition: color 0.3s; }
+    .svc-card:hover h3 { color: var(--gold); }
+    .svc-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.75; margin-bottom: 1.5rem; }
+    .svc-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .svc-tag { font-size: 0.7rem; padding: 0.25rem 0.7rem; background: rgba(255,255,255,0.04); color: var(--muted); border: none; }
+
+    /* ── WHY ── */
+    #why { padding: 6rem 2rem; background: rgba(10,10,10,0.6); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .why-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .why-img-wrap img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+    .why-text .section-tag { text-align: left; }
+    .why-text h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,3.5vw,2.8rem); font-weight: 700; line-height: 1.2; margin-bottom: 1.5rem; }
+    .why-text > p { color: var(--muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 2.5rem; }
+    .why-points { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem; }
+    .why-point { display: flex; gap: 1.2rem; }
+    .why-point-bar { width: 3px; flex-shrink: 0; background: var(--gold); margin-top: 3px; }
+    .why-point h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .why-point p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+    /* ── CTA ── */
+    #cta { padding: 8rem 2rem; text-align: center; position: relative; overflow: hidden; }
+    .cta-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1920&q=80&auto=format&fit=crop'); background-size: cover; background-position: center; opacity: 0.12; }
+    .cta-overlay { position: absolute; inset: 0; background: linear-gradient(to right, var(--bg), rgba(5,5,5,0.9), var(--bg)); }
+    .cta-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+    .cta-inner .section-tag { display: block; text-align: center; margin-bottom: 1.2rem; }
+    .cta-inner h2 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem,5vw,4rem); font-weight: 700; line-height: 1.2; margin-bottom: 1.5rem; }
+    .cta-inner p { color: var(--muted); font-size: 1rem; line-height: 1.8; max-width: 560px; margin: 0 auto 2.5rem; }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { padding: 8rem 2rem; background: #050505; text-align: center; border-top: 1px solid var(--border); }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 4rem auto 0; }
+    .testimonial-card { background: var(--card); border: 1px solid rgba(212,175,55,0.1); padding: 2.5rem; transition: border-color 0.4s, transform 0.4s; position: relative; text-align: left; }
+    .testimonial-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+    .quote-icon { color: var(--gold); font-size: 3rem; line-height: 1; margin-bottom: 1rem; opacity: 0.4; font-family: 'Playfair Display', serif; }
+    .testimonial-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.8; }
+    .testimonial-author { margin-top: 1.5rem; color: var(--gold); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; }
+
+    /* ── FADE IN ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── CONTACT ── */
+    #contact { padding: 6rem 2rem; background: rgba(10,10,10,0.4); border-top: 1px solid var(--border); }
+    .contact-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
+    .contact-left .section-tag { text-align: left; margin-bottom: 1rem; }
+    .contact-left h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3vw,2.6rem); font-weight: 700; margin-bottom: 1rem; }
+    .contact-left > p { color: var(--muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 2.5rem; }
+    .contact-items { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-item { display: flex; align-items: center; gap: 1.2rem; border: 1px solid var(--border); padding: 1rem 1.4rem; transition: border-color 0.3s; }
+    .contact-item:hover { border-color: rgba(212,175,55,0.2); }
+    .contact-icon { width: 44px; height: 44px; border: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; justify-content: center; color: var(--gold); flex-shrink: 0; }
+    .contact-text small { display: block; font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem; }
+    .contact-text span { font-size: 0.92rem; }
+    .contact-right img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+
+    /* ── DIFFERENTIATORS ── */
+    #different { padding: 6rem 2rem; border-top: 1px solid var(--border); }
+    .diff-header { text-align: center; margin-bottom: 4rem; }
+    .diff-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+    /* Regular diff card */
+    .diff-card {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 2rem; position: relative; overflow: hidden;
+      transition: border-color 0.4s, transform 0.3s;
+    }
+    .diff-card:hover { border-color: rgba(212,175,55,0.3); transform: translateY(-4px); }
+    .diff-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); opacity: 0; transition: opacity 0.4s; }
+    .diff-card:hover::before { opacity: 1; }
+    .diff-emoji { font-size: 2rem; margin-bottom: 1.2rem; display: block; }
+    .diff-card h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--fg); }
+    .diff-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+    /* PRO card — full width, gold border */
+    .diff-card-pro {
+      grid-column: span 3;
+      background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(10,10,10,1) 60%);
+      border: 1px solid rgba(212,175,55,0.4);
+      padding: 2.5rem;
+      position: relative; overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center;
+    }
+    .diff-card-pro::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+    .diff-card-pro::after { content: 'PRO'; position: absolute; top: 1.2rem; right: 1.5rem; background: var(--gold); color: #050505; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.2em; padding: 0.2rem 0.6rem; }
+    .diff-pro-left h3 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 700; margin-bottom: 1rem; }
+    .diff-pro-left p { color: var(--muted); font-size: 0.92rem; line-height: 1.75; margin-bottom: 1.5rem; }
+    .diff-pro-features { display: flex; flex-direction: column; gap: 0.75rem; }
+    .diff-pro-feat { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.88rem; color: var(--muted); }
+    .diff-pro-feat::before { content: '✦'; color: var(--gold); font-size: 0.7rem; flex-shrink: 0; margin-top: 2px; }
+    .diff-pro-right { display: flex; flex-direction: column; gap: 0.6rem; }
+    .diff-pro-tag { background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.2); padding: 0.75rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+    .diff-pro-tag-icon { color: var(--gold); font-size: 1.1rem; flex-shrink: 0; }
+    .diff-pro-tag span { color: var(--fg); font-weight: 500; }
+    .diff-pro-tag small { color: var(--muted); font-size: 0.75rem; display: block; margin-top: 0.1rem; }
+
+    @media (max-width: 900px) {
+      .diff-grid { grid-template-columns: 1fr; }
+      .diff-card-pro { grid-column: span 1; grid-template-columns: 1fr; }
+    }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 800; color: var(--gold); text-decoration: none; }
+    footer p { font-size: 0.8rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 0 1.2rem; height: 65px; }
+      .nav-links { display: none; }
+      .nav-logo { font-size: 1.2rem; }
+      .nav-login { display: none; }
+      .btn-primary { padding: 0.55rem 1rem; font-size: 0.65rem; }
+      #hero { padding-top: 65px; }
+      #hero, #stats, #services, #why, #cta, #contact, #different { padding: 3.5rem 1.2rem; }
+      .hero-content { padding: 0 0.5rem; }
+      .hero-btns { flex-direction: column; align-items: center; gap: 1rem; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); gap: 1rem; }
+      .services-bento { grid-template-columns: 1fr; }
+      .svc-card.wide, .svc-card.narrow { grid-column: span 1; }
+      .why-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .why-img-wrap { display: none; }
+      .contact-right { display: none; }
+      .diff-grid { grid-template-columns: 1fr; }
+      .diff-card-pro { grid-column: span 1; grid-template-columns: 1fr; gap: 1.5rem; }
+      footer { flex-direction: column; align-items: center; text-align: center; gap: 0.8rem; }
+      .footer-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .lang-switcher { font-size: 0.6rem; }
+      .hero-title { font-size: clamp(2.5rem, 12vw, 4rem); }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .stat-num { font-size: 2rem; }
+      .diff-pro-tag { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+      .hero-scroll { display: none; }
+    }
+  
+
+/* ==================== DASHBOARD STYLES ==================== */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050505; --card: #0a0a0a; --card2: #0f0f0f;
+      --gold: #D4AF37; --gold-light: #F1D06E; --gold-dark: #B8960C;
+      --fg: #EDEDED; --muted: hsl(240 5% 65%);
+      --border: rgba(255,255,255,0.08); --border-gold: rgba(212,175,55,0.2);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Manrope', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Playfair Display', serif; }
+    ::selection { background: rgba(212,175,55,0.3); color: var(--fg); }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #27272A; } ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    .gold-gradient { background: linear-gradient(to right, #D4AF37, #F1D06E, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .gold-line { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .glass { backdrop-filter: blur(16px); background: rgba(5,5,5,0.85); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    /* BUTTONS */
+    .btn-primary { background: var(--gold); color: #050505; border: none; padding: 0.85rem 2rem; font-family: 'Manrope', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,175,55,0.25); }
+    .btn-secondary { background: transparent; color: var(--gold); border: 1px solid rgba(212,175,55,0.3); padding: 0.85rem 2rem; font-family: 'Manrope', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, border-color 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-secondary:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.6); }
+    .btn-ghost { background: transparent; border: none; color: var(--muted); font-family: 'Manrope', sans-serif; font-size: 0.82rem; cursor: pointer; transition: color 0.2s; padding: 0.4rem 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .btn-ghost:hover { color: var(--gold); }
+    .btn-sm { padding: 0.45rem 0.9rem !important; font-size: 0.62rem !important; }
+    .btn-full { width: 100%; justify-content: center; }
+    .btn-confirm { background: rgba(34,197,94,0.15) !important; color: #4ade80 !important; border: 1px solid rgba(34,197,94,0.3) !important; }
+    .btn-confirm:hover { background: rgba(34,197,94,0.25) !important; box-shadow: none !important; }
+    .btn-refuse { background: rgba(239,68,68,0.15) !important; color: #f87171 !important; border: 1px solid rgba(239,68,68,0.3) !important; }
+    .btn-refuse:hover { background: rgba(239,68,68,0.25) !important; box-shadow: none !important; }
+    .btn-complete { background: rgba(59,130,246,0.15) !important; color: #93c5fd !important; border: 1px solid rgba(59,130,246,0.3) !important; }
+    .btn-complete:hover { background: rgba(59,130,246,0.25) !important; box-shadow: none !important; }
+
+    /* FIELDS */
+    .field { margin-bottom: 1.2rem; }
+    .field label { display: block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .field input, .field select, .field textarea { width: 100%; background: var(--card2); border: 1px solid var(--border); color: var(--fg); padding: 0.85rem 1rem; font-family: 'Manrope', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.3s; appearance: none; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: rgba(212,175,55,0.5); box-shadow: 0 0 0 2px rgba(212,175,55,0.06); }
+    .field input::placeholder, .field textarea::placeholder { color: rgba(160,160,160,0.35); }
+    .field textarea { resize: vertical; min-height: 110px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* BADGES */
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+    .badge-pending   { background: rgba(234,179,8,0.15);  color: #fbbf24; }
+    .badge-confirmed { background: rgba(34,197,94,0.15);  color: #4ade80; }
+    .badge-completed { background: rgba(59,130,246,0.15); color: #93c5fd; }
+    .badge-cancelled { background: rgba(239,68,68,0.15);  color: #f87171; }
+    .badge-unread    { background: rgba(212,175,55,0.15); color: var(--gold); }
+    .badge-read      { background: rgba(255,255,255,0.05);color: var(--muted); }
+    .badge-replied   { background: rgba(34,197,94,0.1);   color: #4ade80; }
+    .badge-admin     { background: rgba(212,175,55,0.12); color: var(--gold); }
+    .badge-client    { background: rgba(255,255,255,0.05);color: var(--muted); }
+
+    /* CARDS */
+    .card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; transition: border-color 0.4s; }
+    .card:hover { border-color: rgba(212,175,55,0.12); }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.7rem 1rem; color: var(--muted); font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; border-bottom: 1px solid var(--border); }
+    td { padding: 0.95rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.015); }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 3.5rem 2rem; color: var(--muted); }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3; }
+
+    /* GRIDS */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+    .grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+
+    /* STAT */
+    .stat-card { background: var(--card); border: 1px solid var(--border); padding: 1.5rem; text-align: center; transition: border-color 0.3s, transform 0.3s; }
+    .stat-card:hover { border-color: var(--border-gold); transform: translateY(-2px); }
+    .stat-icon { font-size: 1.4rem; margin-bottom: 0.7rem; opacity: 0.7; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
+    .stat-lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--card); border: 1px solid rgba(212,175,55,0.3); color: var(--fg); padding: 1rem 1.5rem; font-size: 0.85rem; z-index: 9999; max-width: 340px; display: none; }
+
+    /* ═══ AUTH PAGE ═══ */
+    #authPage { min-height: 100vh; display: flex; }
+    .auth-left { width: 100%; max-width: 560px; display: flex; flex-direction: column; justify-content: center; padding: 3rem 4rem; }
+    .auth-back { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 3rem; transition: color 0.2s; cursor: pointer; background: none; border: none; font-family: 'Manrope', sans-serif; }
+    .auth-back:hover { color: var(--gold); }
+    .auth-logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; }
+    .auth-logo span { color: var(--gold); }
+    .auth-desc { color: var(--muted); font-size: 0.88rem; margin-top: 0.3rem; margin-bottom: 2rem; }
+    .auth-divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .auth-divider span { color: var(--muted); font-size: 0.78rem; }
+    .auth-toggle { text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--muted); }
+    .auth-toggle a { color: var(--gold); cursor: pointer; }
+    .auth-toggle a:hover { text-decoration: underline; }
+    .auth-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; padding: 0.75rem 1rem; font-size: 0.82rem; margin-bottom: 1rem; display: none; }
+    .btn-google { width: 100%; background: transparent; border: 1px solid var(--border); color: var(--fg); padding: 0.9rem 1rem; font-family: 'Manrope', sans-serif; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: border-color 0.2s, background 0.2s; margin-bottom: 1.5rem; }
+    .btn-google:hover { border-color: rgba(212,175,55,0.4); background: rgba(212,175,55,0.03); }
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
+    .role-btn { border: 1px solid var(--border); background: transparent; color: var(--fg); padding: 1rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; transition: border-color 0.2s, background 0.2s; font-family: 'Manrope', sans-serif; }
+    .role-btn:hover { border-color: rgba(212,175,55,0.4); }
+    .role-btn.active { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+    .role-btn .role-icon { font-size: 1.4rem; }
+    .role-btn .role-name { font-size: 0.82rem; font-weight: 600; }
+    .role-btn.active .role-name { color: var(--gold); }
+    .role-btn .role-desc { font-size: 0.7rem; color: var(--muted); text-align: center; }
+    .auth-right { flex: 1; position: relative; display: none; }
+    @media (min-width: 1024px) { .auth-right { display: block; } }
+    .auth-right-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1705559782620-6a4707edd9aa?w=1920&q=80'); background-size: cover; background-position: center; }
+    .auth-right-overlay { position: absolute; inset: 0; background: linear-gradient(to right, var(--bg), transparent); }
+    .auth-quote { position: absolute; bottom: 4rem; left: 4rem; right: 4rem; }
+    .auth-quote blockquote { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-style: italic; color: rgba(237,237,237,0.9); margin-bottom: 1rem; line-height: 1.5; }
+
+    /* ═══ DASHBOARD ═══ */
+    #dashPage { display: none; min-height: 100vh; }
+    .dash-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 80px; display: flex; align-items: center; padding: 0 2rem; justify-content: space-between; backdrop-filter: blur(16px); background: rgba(5,5,5,0.9); border-bottom: 1px solid rgba(212,175,55,0.12); }
+    .dash-nav-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; color: var(--gold); letter-spacing: 0.02em; }
+    .dash-nav-right { display: flex; align-items: center; gap: 1.2rem; }
+    .dash-nav-name { font-size: 0.85rem; color: var(--muted); }
+    .dash-layout { display: flex; padding-top: 80px; min-height: calc(100vh - 80px); }
+    .dash-sidebar { width: 240px; flex-shrink: 0; background: rgba(5,5,5,0.98); border-right: 1px solid rgba(212,175,55,0.08); position: fixed; top: 80px; bottom: 0; overflow-y: auto; padding: 1.5rem 0; }
+    .sidebar-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; color: var(--muted); cursor: pointer; transition: color 0.2s, background 0.2s; font-size: 0.85rem; border-left: 2px solid transparent; }
+    .sidebar-nav-item:hover { color: var(--fg); background: rgba(255,255,255,0.02); }
+    .sidebar-nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(212,175,55,0.05); }
+    .sidebar-nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-unread { margin-left: auto; background: var(--gold); color: #050505; font-size: 0.58rem; font-weight: 800; padding: 0.15rem 0.45rem; border-radius: 10px; }
+    .dash-main { margin-left: 240px; flex: 1; padding: 2.5rem 3rem; }
+
+    /* PANEL */
+    .panel { display: none; animation: panelFade 0.3s ease; }
+    .panel.active { display: block; }
+    @keyframes panelFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+    .panel-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .panel-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 2rem; }
+
+    /* STEPS */
+    .steps { display: flex; align-items: center; margin-bottom: 2rem; }
+    .step-num { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; transition: background 0.3s, color 0.3s; flex-shrink: 0; }
+    .step-done   { background: var(--gold); color: #050505; }
+    .step-active { background: var(--gold); color: #050505; }
+    .step-off    { background: rgba(255,255,255,0.05); color: var(--muted); }
+    .step-line { flex: 1; max-width: 50px; height: 1px; background: var(--border); margin: 0 0.5rem; transition: background 0.3s; }
+    .step-line-done { background: var(--gold); }
+
+    /* WORKER / SERVICE SELECTORS */
+    .worker-btn { width: 100%; display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); background: transparent; color: var(--fg); cursor: pointer; transition: border-color 0.2s, background 0.2s; text-align: left; margin-bottom: 0.75rem; font-family: 'Manrope', sans-serif; }
+    .worker-btn:hover { border-color: rgba(212,175,55,0.4); }
+    .worker-btn.sel { border-color: var(--gold); background: rgba(212,175,55,0.06); }
+    .worker-avatar { width: 48px; height: 48px; background: rgba(212,175,55,0.12); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid rgba(212,175,55,0.2); }
+    .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .service-tag { padding: 0.65rem 0.75rem; border: 1px solid var(--border); background: transparent; color: var(--fg); font-family: 'Manrope', sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .service-tag:hover { border-color: rgba(212,175,55,0.4); }
+    .service-tag.sel { border-color: var(--gold); background: rgba(212,175,55,0.08); color: var(--gold); }
+
+    /* SLOTS */
+    .slot-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; margin-top: 0.8rem; }
+    .slot-btn { padding: 0.6rem; border: 1px solid var(--border); background: transparent; color: var(--fg); font-family: 'Manrope', sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .slot-btn:hover:not(:disabled) { border-color: rgba(212,175,55,0.5); color: var(--gold); }
+    .slot-btn.sel { background: var(--gold); color: #050505; border-color: var(--gold); font-weight: 700; }
+    .slot-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+    /* SUMMARY */
+    .summary-box { background: rgba(255,255,255,0.025); border: 1px solid var(--border); padding: 1.2rem; margin-bottom: 1.5rem; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.85rem; }
+    .summary-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .summary-row .key { color: var(--muted); }
+
+    /* APPT CARD */
+    .appt-card { border: 1px solid var(--border); padding: 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.2s; }
+    .appt-card:hover { border-color: rgba(212,175,55,0.15); }
+    .appt-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .appt-meta { display: flex; gap: 1.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .appt-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+    /* MSG ITEM */
+    .msg-item { border: 1px solid var(--border); padding: 1.2rem; margin-bottom: 0.75rem; transition: border-color 0.2s; cursor: pointer; }
+    .msg-item:hover { border-color: rgba(212,175,55,0.2); }
+    .msg-item.unread { border-color: rgba(212,175,55,0.25); background: rgba(212,175,55,0.02); }
+    .msg-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .msg-sender { font-weight: 600; font-size: 0.9rem; }
+    .msg-email { font-size: 0.75rem; color: var(--muted); }
+    .msg-subject { color: var(--gold); font-size: 0.88rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .msg-body { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+    .msg-date { font-size: 0.7rem; color: rgba(160,160,160,0.35); margin-top: 0.4rem; }
+
+
+    /* ── CALENDAR ── */
+    .cal-wrap { border: 1px solid var(--border-gold); padding: 1rem; background: var(--card2); }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .cal-month-label { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; color: var(--fg); }
+    .cal-nav { background: transparent; border: 1px solid rgba(212,175,55,0.2); color: var(--gold); width: 32px; height: 32px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .cal-nav:hover { background: rgba(212,175,55,0.1); }
+    .cal-days-header { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; margin-bottom: 4px; }
+    .cal-days-header span { text-align: center; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0.4rem 0; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+    .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; color: var(--fg); }
+    .cal-day:hover:not(.cal-disabled):not(.cal-empty) { border-color: rgba(212,175,55,0.4); color: var(--gold); background: rgba(212,175,55,0.06); }
+    .cal-day.cal-today { border-color: rgba(212,175,55,0.3); color: var(--gold); }
+    .cal-day.cal-selected { background: var(--gold); color: #050505; font-weight: 700; border-color: var(--gold); }
+    .cal-day.cal-disabled { opacity: 0.2; cursor: not-allowed; }
+    .cal-day.cal-empty { cursor: default; }
+    .cal-day.cal-weekend { opacity: 0.3; cursor: not-allowed; }
+
+    @media (max-width: 1024px) {
+      .dash-sidebar { display: none; } .dash-main { margin-left: 0; padding: 1.5rem; }
+      .auth-left { padding: 2rem; max-width: 100%; }
+      .grid2, .grid3, .grid4, .field-row, .service-grid, .role-grid { grid-template-columns: 1fr; }
+      .slot-grid { grid-template-columns: repeat(3,1fr); }
+    }
+  
+
+/* ==================== SERVICE STYLES ==================== */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#050505; --card:#0a0a0a; --gold:#D4AF37; --gold-light:#F1D06E; --fg:#EDEDED; --muted:hsl(240 5% 65%); --border:rgba(255,255,255,0.06); }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--fg); font-family:'Manrope',sans-serif; -webkit-font-smoothing:antialiased; }
+    ::selection { background:rgba(212,175,55,0.3); }
+    ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:#27272A; } ::-webkit-scrollbar-thumb:hover { background:var(--gold); }
+    .gold-gradient { background:linear-gradient(to right,#D4AF37,#F1D06E,#D4AF37); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:200; height:80px; display:flex; align-items:center; justify-content:space-between; padding:0 2.5rem; backdrop-filter:blur(16px); background:rgba(5,5,5,0.9); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:800; color:var(--gold); text-decoration:none; }
+    .nav-back { display:flex; align-items:center; gap:0.5rem; color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.2s; }
+    .nav-back:hover { color:var(--gold); }
+    .btn-rdv { background:var(--gold); color:#050505; border:none; padding:0.65rem 1.4rem; font-family:'Manrope',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; cursor:pointer; text-decoration:none; transition:background 0.2s,transform 0.15s; display:inline-flex; align-items:center; gap:0.5rem; }
+    .btn-rdv:hover { background:var(--gold-light); transform:translateY(-1px); }
+
+    /* HERO */
+    .page-hero { padding:160px 2.5rem 80px; position:relative; overflow:hidden; }
+    .page-hero-bg { position:absolute; inset:0; background:radial-gradient(ellipse at 30% 40%, rgba(212,175,55,0.1) 0%, transparent 60%), radial-gradient(ellipse at 70% 60%, rgba(212,175,55,0.06) 0%, transparent 50%), #050505; }
+    .page-hero-line { position:absolute; top:0; bottom:0; width:1px; background:linear-gradient(to bottom, transparent, rgba(212,175,55,0.4), transparent); animation:lineFloat 8s ease-in-out infinite; }
+    .page-hero-line:nth-child(2) { left:20%; }
+    .page-hero-line:nth-child(3) { left:80%; animation-delay:3s; }
+    @keyframes lineFloat { 0%,100% { opacity:0.2; transform:translateY(0); } 50% { opacity:0.5; transform:translateY(-20px); } }
+    .hero-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+    .hero-tag { font-size:0.68rem; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; display:block; animation:fadeUp 0.7s ease 0.1s both; }
+    .hero-title { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,6vw,5rem); font-weight:800; line-height:1.05; margin-bottom:1.2rem; animation:fadeUp 0.7s ease 0.2s both; }
+    .hero-desc { font-size:1.1rem; color:var(--muted); line-height:1.8; max-width:640px; margin-bottom:2.5rem; animation:fadeUp 0.7s ease 0.3s both; }
+    .hero-actions { display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp 0.7s ease 0.4s both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .gold-bar { width:60px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:2rem 0; }
+
+    /* CONTENT */
+    .page-content { max-width:1100px; margin:0 auto; padding:0 2.5rem 6rem; }
+
+    /* WHAT IS */
+    .section-block { margin-bottom:5rem; }
+    .section-block h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; margin-bottom:1.2rem; }
+    .section-block p { color:var(--muted); font-size:0.95rem; line-height:1.85; margin-bottom:1rem; }
+
+    /* WHAT INCLUDED */
+    .includes-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; margin-top:1.5rem; }
+    .include-card { background:var(--card); border:1px solid var(--border); padding:1.5rem; transition:border-color 0.3s,transform 0.3s; }
+    .include-card:hover { border-color:rgba(212,175,55,0.3); transform:translateY(-3px); }
+    .include-icon { color:var(--gold); margin-bottom:0.8rem; font-size:1.4rem; }
+    .include-card h4 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:0.5rem; }
+    .include-card p { color:var(--muted); font-size:0.85rem; line-height:1.65; margin:0; }
+
+    /* PROCESS */
+    .process-steps { display:flex; flex-direction:column; gap:0; margin-top:1.5rem; }
+    .process-step { display:flex; gap:1.5rem; position:relative; padding-bottom:2rem; }
+    .process-step:not(:last-child)::before { content:''; position:absolute; left:19px; top:40px; bottom:0; width:1px; background:linear-gradient(to bottom,rgba(212,175,55,0.4),transparent); }
+    .step-num { width:40px; height:40px; flex-shrink:0; background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--gold); }
+    .step-body h4 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:0.4rem; margin-top:0.5rem; }
+    .step-body p { color:var(--muted); font-size:0.88rem; line-height:1.7; }
+
+    /* FAQ */
+    .faq-item { border-bottom:1px solid var(--border); padding:1.2rem 0; cursor:pointer; }
+    .faq-q { display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:0.95rem; }
+    .faq-icon { color:var(--gold); font-size:1.2rem; transition:transform 0.3s; flex-shrink:0; }
+    .faq-a { color:var(--muted); font-size:0.88rem; line-height:1.7; max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s; }
+    .faq-item.open .faq-a { max-height:300px; padding-top:0.8rem; }
+    .faq-item.open .faq-icon { transform:rotate(45deg); }
+
+    /* CTA BOTTOM */
+    .cta-bottom { background:var(--card); border:1px solid rgba(212,175,55,0.2); padding:3rem; text-align:center; margin-top:4rem; position:relative; overflow:hidden; }
+    .cta-bottom::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(to right,transparent,var(--gold),transparent); }
+    .cta-bottom h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.2rem); margin-bottom:1rem; }
+    .cta-bottom p { color:var(--muted); font-size:0.92rem; max-width:500px; margin:0 auto 2rem; line-height:1.7; }
+
+    /* FOOTER */
+    footer { border-top:1px solid var(--border); padding:2rem 2.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .footer-logo { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:800; color:var(--gold); text-decoration:none; }
+    footer p { font-size:0.8rem; color:var(--muted); }
+
+    @media (max-width:768px) {
+      .page-hero { padding:130px 1.5rem 60px; }
+      .page-content { padding:0 1.5rem 4rem; }
+      .includes-grid { grid-template-columns:1fr; }
+      nav { padding:0 1.5rem; }
+    }
+  
+
+/* ==================== ROUTER ==================== */
+.w2b-page { display: none; }
+
+  </style>
+</head>
+<body>
+
+<!-- ==================== PAGE: INDEX ==================== -->
+<div class="w2b-page" id="pg-index" style="display:block">
+
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#hero" class="nav-logo">W2B</a>
+  <ul class="nav-links">
+    <li><a href="#services" data-fr="Services" data-en="Services">Services</a></li>
+    <li><a href="#different" data-fr="Pourquoi Nous" data-en="Why Us">Pourquoi Nous</a></li>
+    <li><a href="#contact" data-fr="Contact" data-en="Contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="dashboard.html" class="nav-login" data-fr="Connexion" data-en="Login">Connexion</a>
+    <a href="dashboard.html" class="btn-primary" data-fr="COMMENCER" data-en="GET STARTED">COMMENCER</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hero-pulse1"></div>
+    <div class="hero-pulse2"></div>
+    <div class="hero-pulse3"></div>
+    <div class="hero-lines">
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+    </div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-label" data-fr="Agence de Copywriting Premium" data-en="Premium Copywriting Agency">Agence de Copywriting Premium</div>
+    <h1 class="hero-title"><span class="gold-gradient">World2Blinded</span></h1>
+    <p class="hero-subtitle">"The world can be all yours"</p>
+    <p class="hero-desc" data-fr="Nous transformons vos mots en armes de persuasion massive. Chaque phrase, chaque mot est conçu pour captiver, convaincre et convertir." data-en="We transform your words into powerful persuasion tools. Every sentence, every word is designed to captivate, convince and convert.">Nous transformons vos mots en armes de persuasion massive. Chaque phrase, chaque mot est conçu pour captiver, convaincre et convertir.</p>
+    <div class="hero-btns">
+      <a href="dashboard.html" class="btn-primary" style="padding:1rem 2.2rem;font-size:0.78rem;" data-fr="PRENDRE RENDEZ-VOUS →" data-en="TAKE AN APPOINTMENT →">PRENDRE RENDEZ-VOUS →</a>
+      <a href="#services" class="btn-ghost-link" data-fr="Découvrir nos services ›" data-en="Discover our services ›">Découvrir nos services ›</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-mouse"><div class="scroll-dot"></div></div></div>
+</section>
+
+<!-- ── STATS ── -->
+<section id="stats">
+  <div class="stats-inner">
+    <div class="stat-block">
+      <div class="stat-icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-num">47</div>
+      <div class="stat-label" data-fr="Clients Satisfaits" data-en="Happy Clients">Clients Satisfaits</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="stat-num">47</div>
+      <div class="stat-label" data-fr="Projets Réalisés" data-en="Projects Completed">Projets Réalisés</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <div class="stat-num">+127%</div>
+      <div class="stat-label" data-fr="Taux de Conversion Moyen" data-en="Average Conversion Rate">Taux de Conversion Moyen</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></div>
+      <div class="stat-num">3 ans</div>
+      <div class="stat-label" data-fr="D'Expérience" data-en="Years of Experience">D'Expérience</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ── -->
+<section id="services">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag" data-fr="Nos Expertises" data-en="Our Expertise">Nos Expertises</span>
+      <h2 class="section-title" data-fr="Services qui <span class='gold-gradient'>Transforment</span>" data-en="Services that <span class='gold-gradient'>Transform</span>">Services qui <span class="gold-gradient">Transforment</span></h2>
+      <div class="gold-line" style="margin:0 auto;"></div>
+    </div>
+    <div class="services-bento">
+      <a href="service-copywriting.html" class="svc-card wide">
+        <div class="svc-card-head">
+          <div class="svc-icon-box"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <span class="svc-arrow">→</span>
+        </div>
+        <h3>Copywriting</h3>
+        <p data-fr="Des mots qui convertissent. Nous créons des textes percutants qui transforment vos visiteurs en clients fidèles." data-en="Words that convert. We create powerful copy that turns your visitors into loyal customers.">Des mots qui convertissent. Nous créons des textes percutants qui transforment vos visiteurs en clients fidèles.</p>
+        <div class="svc-tags">
+          <span class="svc-tag" data-fr="Pages de vente" data-en="Sales pages">Pages de vente</span>
+          <span class="svc-tag" data-fr="Emails marketing" data-en="Email marketing">Emails marketing</span>
+          <span class="svc-tag" data-fr="Scripts vidéo" data-en="Video scripts">Scripts vidéo</span>
+          <span class="svc-tag" data-fr="Landing pages" data-en="Landing pages">Landing pages</span>
+        </div>
+      </a>
+      <a href="service-strategie.html" class="svc-card narrow">
+        <div class="svc-card-head">
+          <div class="svc-icon-box"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <span class="svc-arrow">→</span>
+        </div>
+        <h3 data-fr="Stratégie de Contenu" data-en="Content Strategy">Stratégie de Contenu</h3>
+        <p data-fr="Un plan d'action sur mesure pour dominer votre marché avec du contenu qui résonne avec votre audience." data-en="A custom action plan to dominate your market with content that resonates with your audience.">Un plan d'action sur mesure pour dominer votre marché avec du contenu qui résonne avec votre audience.</p>
+        <div class="svc-tags">
+          <span class="svc-tag" data-fr="Audit de contenu" data-en="Content audit">Audit de contenu</span>
+          <span class="svc-tag" data-fr="Calendrier éditorial" data-en="Editorial calendar">Calendrier éditorial</span>
+          <span class="svc-tag" data-fr="SEO optimisé" data-en="SEO optimized">SEO optimisé</span>
+          <span class="svc-tag" data-fr="Analytics avancés" data-en="Advanced analytics">Analytics avancés</span>
+        </div>
+      </a>
+      <a href="service-siteweb.html" class="svc-card narrow">
+        <div class="svc-card-head">
+          <div class="svc-icon-box"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <span class="svc-arrow">→</span>
+        </div>
+        <h3 data-fr="Création de Site Web" data-en="Web Design">Création de Site Web</h3>
+        <p data-fr="Des sites modernes, rapides et optimisés qui reflètent votre marque et convertissent vos visiteurs en clients." data-en="Modern, fast and optimized websites that reflect your brand and convert visitors into clients.">Des sites modernes, rapides et optimisés qui reflètent votre marque et convertissent vos visiteurs en clients.</p>
+        <div class="svc-tags">
+          <span class="svc-tag" data-fr="Design sur mesure" data-en="Custom design">Design sur mesure</span>
+          <span class="svc-tag" data-fr="SEO intégré" data-en="Built-in SEO">SEO intégré</span>
+          <span class="svc-tag" data-fr="Mobile friendly" data-en="Mobile friendly">Mobile friendly</span>
+          <span class="svc-tag" data-fr="Optimisé conversion" data-en="Conversion optimized">Optimisé conversion</span>
+        </div>
+      </a>
+      <a href="service-reseaux.html" class="svc-card wide">
+        <div class="svc-card-head">
+          <div class="svc-icon-box"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+          <span class="svc-arrow">→</span>
+        </div>
+        <h3 data-fr="Réseaux Sociaux" data-en="Social Media">Réseaux Sociaux</h3>
+        <p data-fr="Captivez votre audience sur toutes les plateformes avec du contenu qui engage et convertit." data-en="Captivate your audience on all platforms with content that engages and converts.">Captivez votre audience sur toutes les plateformes avec du contenu qui engage et convertit.</p>
+        <div class="svc-tags">
+          <span class="svc-tag" data-fr="Posts optimisés" data-en="Optimized posts">Posts optimisés</span>
+          <span class="svc-tag" data-fr="Stories engageantes" data-en="Engaging stories">Stories engageantes</span>
+          <span class="svc-tag" data-fr="Publicités ciblées" data-en="Targeted ads">Publicités ciblées</span>
+          <span class="svc-tag" data-fr="Community management" data-en="Community management">Community management</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section id="testimonials">
+  <span class="section-tag" data-fr="Témoignages" data-en="Testimonials">Témoignages</span>
+  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;margin-top:1rem;" class="fade-in">
+    <span class="gold-gradient" data-fr="Ils nous font confiance" data-en="They trust us">Ils nous font confiance</span>
+  </h2>
+  <div class="gold-line" style="margin:1.5rem auto;"></div>
+  <div class="testimonial-grid">
+    <div class="testimonial-card fade-in">
+      <div class="quote-icon">"</div>
+      <p data-fr="World2Blinded a totalement transformé notre tunnel de vente. Notre taux de conversion a bondi de 45% en un mois." data-en="World2Blinded completely transformed our sales funnel. Our conversion rate jumped 45% in one month.">World2Blinded a totalement transformé notre tunnel de vente. Notre taux de conversion a bondi de 45% en un mois.</p>
+      <div class="testimonial-author">— Marc A., CEO LuxeDigital</div>
+    </div>
+    <div class="testimonial-card fade-in">
+      <div class="quote-icon">"</div>
+      <p data-fr="Une plume rare et une compréhension stratégique du marché premium. Le retour sur investissement est immédiat." data-en="A rare talent and a strategic understanding of the premium market. The return on investment is immediate.">Une plume rare et une compréhension stratégique du marché premium. Le retour sur investissement est immédiat.</p>
+      <div class="testimonial-author">— Sarah L., Fondatrice de Maison S.</div>
+    </div>
+    <div class="testimonial-card fade-in">
+      <div class="quote-icon">"</div>
+      <p data-fr="Un partenaire de confiance qui comprend vraiment les enjeux d'une marque haut de gamme. Résultats au-delà de nos attentes." data-en="A trusted partner who truly understands the challenges of a high-end brand. Results beyond our expectations.">Un partenaire de confiance qui comprend vraiment les enjeux d'une marque haut de gamme. Résultats au-delà de nos attentes.</p>
+      <div class="testimonial-author">— Julien M., Directeur Marketing</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY US ── -->
+<section id="why">
+  <div class="why-grid">
+    <div class="why-img-wrap">
+      <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&q=75&auto=format&fit=crop" alt="Copywriting expertise" loading="lazy" />
+    </div>
+    <div class="why-text">
+      <span class="section-tag" data-fr="Pourquoi Nous Choisir" data-en="Why Choose Us">Pourquoi Nous Choisir</span>
+      <h2 data-fr="L'Excellence n'est pas une <span class='gold-gradient'>Option</span>" data-en="Excellence is not an <span class='gold-gradient'>Option</span>">L'Excellence n'est pas une <span class="gold-gradient">Option</span></h2>
+      <p data-fr="Dans un monde saturé de contenu médiocre, nous sommes les alchimistes qui transforment vos idées en or. Chaque mot que nous écrivons est une arme stratégique conçue pour atteindre vos objectifs." data-en="In a world saturated with mediocre content, we are the alchemists who turn your ideas into gold. Every word we write is a strategic weapon designed to achieve your goals.">Dans un monde saturé de contenu médiocre, nous sommes les alchimistes qui transforment vos idées en or. Chaque mot que nous écrivons est une arme stratégique conçue pour atteindre vos objectifs.</p>
+      <div class="why-points">
+        <div class="why-point">
+          <div class="why-point-bar"></div>
+          <div>
+            <h4 data-fr="Approche Data-Driven" data-en="Data-Driven Approach">Approche Data-Driven</h4>
+            <p data-fr="Nous analysons, testons et optimisons chaque élément pour maximiser vos conversions." data-en="We analyze, test and optimize every element to maximize your conversions.">Nous analysons, testons et optimisons chaque élément pour maximiser vos conversions.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="why-point-bar"></div>
+          <div>
+            <h4 data-fr="Résultats Mesurables" data-en="Measurable Results">Résultats Mesurables</h4>
+            <p data-fr="Nos clients voient en moyenne une augmentation de 127% de leur taux de conversion." data-en="Our clients see an average 127% increase in their conversion rate.">Nos clients voient en moyenne une augmentation de 127% de leur taux de conversion.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="why-point-bar"></div>
+          <div>
+            <h4 data-fr="Expertise Sectorielle" data-en="Industry Expertise">Expertise Sectorielle</h4>
+            <p data-fr="De la tech à la finance, nous maîtrisons les codes de votre industrie." data-en="From tech to finance, we master the codes of your industry.">De la tech à la finance, nous maîtrisons les codes de votre industrie.</p>
+          </div>
+        </div>
+      </div>
+      <a href="dashboard.html" class="btn-secondary" data-fr="DISCUTONS DE VOTRE PROJET →" data-en="LET'S DISCUSS YOUR PROJECT →">DISCUTONS DE VOTRE PROJET →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── POURQUOI NOUS SOMMES DIFFÉRENTS ── -->
+<section id="different">
+  <div class="diff-header">
+    <span class="section-tag" data-fr="Notre Avantage Compétitif" data-en="Our Competitive Edge">Notre Avantage Compétitif</span>
+    <h2 class="section-title" data-fr="Pourquoi Nous Sommes <span class='gold-gradient'>Différents</span>" data-en="Why We Are <span class='gold-gradient'>Different</span>">Pourquoi Nous Sommes <span class="gold-gradient">Différents</span></h2>
+    <div class="gold-line" style="margin:0 auto 0.8rem;"></div>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:560px;margin:0 auto;" data-fr="Aucune autre agence à Montréal n'offre tout ça en même temps." data-en="No other agency in Montreal offers all of this at the same time.">Aucune autre agence à Montréal n'offre tout ça en même temps.</p>
+  </div>
+  <div class="diff-grid">
+
+    <!-- Card 1 — Appel gratuit -->
+    <div class="diff-card">
+      <span class="diff-emoji">📞</span>
+      <h3 data-fr="Appel Stratégique Gratuit 30 min" data-en="Free 30-min Strategy Call">Appel Stratégique Gratuit 30 min</h3>
+      <p data-fr="Avant de signer quoi que ce soit, on analyse gratuitement votre marketing actuel et on vous montre exactement ce qui cloche. Aucun engagement." data-en="Before signing anything, we freely analyze your current marketing and show you exactly what's wrong. No commitment.">Avant de signer quoi que ce soit, on analyse gratuitement votre marketing actuel et on vous montre exactement ce qui cloche. Aucun engagement.</p>
+    </div>
+
+    <!-- Card 2 — Garantie -->
+    <div class="diff-card">
+      <span class="diff-emoji">✅</span>
+      <h3 data-fr="Garantie de Résultats Écrite" data-en="Written Results Guarantee">Garantie de Résultats Écrite</h3>
+      <p data-fr="Si votre taux de conversion n'augmente pas dans les 30 jours suivant la livraison, on rembourse. C'est écrit noir sur blanc dans chaque contrat." data-en="If your conversion rate doesn't increase within 30 days of delivery, we refund. It's written in black and white in every contract.">Si votre taux de conversion n'augmente pas dans les 30 jours suivant la livraison, on rembourse. C'est écrit noir sur blanc dans chaque contrat.</p>
+    </div>
+
+    <!-- Card 3 — Bilingue -->
+    <div class="diff-card">
+      <span class="diff-emoji">🇫🇷🇬🇧</span>
+      <h3 data-fr="Copywriting Bilingue Natif" data-en="Native Bilingual Copywriting">Copywriting Bilingue Natif</h3>
+      <p data-fr="Français et anglais avec la même qualité native. Touchez les deux marchés montréalais simultanément — quelque chose que presque aucune agence ne fait vraiment bien." data-en="French and English with the same native quality. Reach both Montreal markets simultaneously — something almost no agency does truly well.">Français et anglais avec la même qualité native. Touchez les deux marchés montréalais simultanément.</p>
+    </div>
+
+    <!-- Card 4 — 48h -->
+    <div class="diff-card">
+      <span class="diff-emoji">⚡</span>
+      <h3 data-fr="Livraison Express 48h" data-en="48h Express Delivery">Livraison Express 48h</h3>
+      <p data-fr="Les agences prennent 2 à 3 semaines. Nous livrons en 48h pour les projets urgents. Parce que vos opportunités n'attendent pas." data-en="Agencies take 2 to 3 weeks. We deliver in 48h for urgent projects. Because your opportunities don't wait.">Les agences prennent 2 à 3 semaines. Nous livrons en 48h pour les projets urgents. Parce que vos opportunités n'attendent pas.</p>
+    </div>
+
+    <!-- Card 5 — Rapport -->
+    <div class="diff-card">
+      <span class="diff-emoji">📊</span>
+      <h3 data-fr="Rapport de Performance Mensuel" data-en="Monthly Performance Report">Rapport de Performance Mensuel</h3>
+      <p data-fr="Chaque mois, vous recevez un rapport détaillé avec les métriques réelles — taux de clics, conversions, croissance. On ne disparaît pas après la livraison." data-en="Every month, you receive a detailed report with real metrics — click rates, conversions, growth. We don't disappear after delivery.">Chaque mois, vous recevez un rapport détaillé avec les métriques réelles. On ne disparaît pas après la livraison.</p>
+    </div>
+
+    <!-- Card 6 — IA -->
+    <div class="diff-card">
+      <span class="diff-emoji">🤖</span>
+      <h3 data-fr="IA + Expertise Humaine" data-en="AI + Human Expertise">IA + Expertise Humaine</h3>
+      <p data-fr="Nous combinons des outils IA de pointe avec notre expertise humaine pour livrer 2x plus de contenu au même prix que nos concurrents. Plus vite, sans sacrifier la qualité." data-en="We combine cutting-edge AI tools with human expertise to deliver 2x more content at the same price as our competitors. Faster, without sacrificing quality.">Nous combinons des outils IA de pointe avec notre expertise humaine pour livrer 2x plus de contenu au même prix que nos concurrents.</p>
+    </div>
+
+    <!-- Card PRO — Package Contenu Complet -->
+    <div class="diff-card-pro">
+      <div class="diff-pro-left">
+        <h3 data-fr="Package Contenu <span class='gold-gradient'>Complet</span>" data-en="Complete Content <span class='gold-gradient'>Package</span>">Package Contenu <span class="gold-gradient">Complet</span></h3>
+        <p data-fr="Arrêtez de jongler entre 3 agences différentes. Avec notre package Pro, vous avez tout en un seul endroit — copy, stratégie, site web et réseaux sociaux. Un seul interlocuteur, une vision cohérente, des résultats maximaux." data-en="Stop juggling between 3 different agencies. With our Pro package, you have everything in one place — copy, strategy, website and social media. One contact, one coherent vision, maximum results.">Arrêtez de jongler entre 3 agences différentes. Avec notre package Pro, vous avez tout en un seul endroit — copy, stratégie, site web et réseaux sociaux. Un seul interlocuteur, une vision cohérente, des résultats maximaux.</p>
+        <a href="dashboard.html" class="btn-primary" style="font-size:0.72rem;" data-fr="RÉSERVER UNE CONSULTATION →" data-en="BOOK A CONSULTATION →">RÉSERVER UNE CONSULTATION →</a>
+      </div>
+      <div class="diff-pro-right">
+        <div class="diff-pro-tag"><span class="diff-pro-tag-icon">✍️</span><div><span data-fr="Copywriting complet" data-en="Full Copywriting">Copywriting complet</span><small data-fr="Pages de vente, emails, scripts" data-en="Sales pages, emails, scripts">Pages de vente, emails, scripts</small></div></div>
+        <div class="diff-pro-tag"><span class="diff-pro-tag-icon">🎯</span><div><span data-fr="Stratégie de contenu" data-en="Content Strategy">Stratégie de contenu</span><small data-fr="Calendrier éditorial + SEO" data-en="Editorial calendar + SEO">Calendrier éditorial + SEO</small></div></div>
+        <div class="diff-pro-tag"><span class="diff-pro-tag-icon">🌐</span><div><span data-fr="Site web sur mesure" data-en="Custom website">Site web sur mesure</span><small data-fr="Design + développement complet" data-en="Full design + development">Design + développement complet</small></div></div>
+        <div class="diff-pro-tag"><span class="diff-pro-tag-icon">📱</span><div><span data-fr="Gestion réseaux sociaux" data-en="Social media management">Gestion réseaux sociaux</span><small data-fr="Contenu + community management" data-en="Content + community management">Contenu + community management</small></div></div>
+        <div class="diff-pro-tag"><span class="diff-pro-tag-icon">📊</span><div><span data-fr="Rapport mensuel inclus" data-en="Monthly report included">Rapport mensuel inclus</span><small data-fr="Métriques + recommandations" data-en="Metrics + recommendations">Métriques + recommandations</small></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-overlay"></div>
+  <div class="cta-inner">
+    <span class="section-tag" data-fr="Prêt à dominer votre marché ?" data-en="Ready to dominate your market?">Prêt à dominer votre marché ?</span>
+    <h2 data-fr="Votre Succès Commence par un <span class='gold-gradient'>Rendez-vous</span>" data-en="Your Success Starts with an <span class='gold-gradient'>Appointment</span>">Votre Succès Commence par un <span class="gold-gradient">Rendez-vous</span></h2>
+    <p data-fr="Chaque jour qui passe sans copy optimisé est un jour de revenus perdus. Ne laissez pas vos concurrents prendre l'avantage." data-en="Every day without optimized copy is a day of lost revenue. Don't let your competitors get ahead.">Chaque jour qui passe sans copy optimisé est un jour de revenus perdus. Ne laissez pas vos concurrents prendre l'avantage.</p>
+    <a href="dashboard.html" class="btn-primary" style="padding:1.1rem 2.5rem;font-size:0.78rem;" data-fr="PRENDRE RENDEZ-VOUS MAINTENANT →" data-en="BOOK AN APPOINTMENT NOW →">PRENDRE RENDEZ-VOUS MAINTENANT →</a>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <span class="section-tag" data-fr="Contact" data-en="Contact">Contact</span>
+      <h2 data-fr="Parlons de votre <span class='gold-gradient'>Vision</span>" data-en="Let's Talk About your <span class='gold-gradient'>Vision</span>">Parlons de votre <span class="gold-gradient">Vision</span></h2>
+      <p data-fr="Vous avez un projet ? Une question ? Nous sommes là pour transformer vos ambitions en réalité." data-en="Have a project? A question? We're here to turn your ambitions into reality.">Vous avez un projet ? Une question ? Nous sommes là pour transformer vos ambitions en réalité.</p>
+      <div class="contact-items">
+        <div class="contact-item">
+          <div class="contact-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div class="contact-text"><small>Email</small><span><a href="mailto:contact@world2blinded.com" style="color:var(--fg);text-decoration:none;">contact@world2blinded.com</a></span></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="contact-text"><small data-fr="Téléphone" data-en="Phone">Téléphone</small><span>514-448-1900</span></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div class="contact-text"><small data-fr="Localisation" data-en="Location">Localisation</small><span>Montréal, Canada</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=75&auto=format&fit=crop" alt="Our office" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="#hero" class="footer-logo">World2Blinded</a>
+  <p data-fr="© 2026 World2Blinded. Tous droits réservés." data-en="© 2026 World2Blinded. All rights reserved.">© 2026 World2Blinded. Tous droits réservés.</p>
+  <div class="footer-links">
+    <a href="#" data-fr="Mentions Légales" data-en="Legal Notice">Mentions Légales</a>
+    <a href="#" data-fr="Confidentialité" data-en="Privacy Policy">Confidentialité</a>
+  </div>
+</footer>
+</div>
+
+<div class="w2b-page" id="pg-dashboard">
+
+
+<!-- ═══ AUTH PAGE ═══ -->
+<div id="authPage">
+  <div class="auth-left">
+    <a href="index.html" class="auth-back">← Retour au site</a>
+    <div class="auth-logo">World2<span>Blinded</span></div>
+    <p class="auth-desc" id="authDesc">Connectez-vous à votre espace client</p>
+    <div class="auth-error" id="authError"></div>
+
+    <!-- LOGIN -->
+    <div id="loginSection">
+      <!-- Google Sign-In button -->
+      <div id="g_id_onload"
+        data-client_id="1012485303548-odrma8ac851a0fgkr2vup1n5vkgbs7g5.apps.googleusercontent.com"
+        data-callback="handleGoogleLogin"
+        data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="filled_black"
+        data-text="continue_with"
+        data-shape="rectangular"
+        data-logo_alignment="left"
+        data-width="420">
+      </div>
+      <div class="auth-divider"><span>ou</span></div>
+      <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="vous@example.com" /></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••••" /></div>
+      <button class="btn-primary btn-full" onclick="handleLogin()">SE CONNECTER →</button>
+      <div class="auth-toggle">Pas encore de compte ? <a onclick="switchToRegister()">S'inscrire</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerSection" style="display:none;">
+      <div class="field"><label>Nom complet</label><input type="text" id="regName" placeholder="John Doe" /></div>
+      <p style="font-size:0.68rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;">Type de compte</p>
+      <div class="role-grid">
+        <button class="role-btn active" id="roleClientBtn" onclick="selectRole('client')">
+          <span class="role-icon">👤</span><span class="role-name">Client</span><span class="role-desc">Besoin de services</span>
+        </button>
+        <button class="role-btn" id="roleWorkerBtn" onclick="selectRole('worker')">
+          <span class="role-icon">💼</span><span class="role-name">Professionnel</span><span class="role-desc">Offrir mes services</span>
+        </button>
+      </div>
+      <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="vous@example.com" /></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="regPassword" placeholder="Min. 6 caractères" /></div>
+      <button class="btn-primary btn-full" onclick="handleRegister()">CRÉER MON COMPTE →</button>
+      <div class="auth-toggle">Déjà un compte ? <a onclick="switchToLogin()">Se connecter</a></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-right-bg"></div>
+    <div class="auth-right-overlay"></div>
+    <div class="auth-quote">
+      <blockquote>"Les mots ont le pouvoir de changer le monde. Nous en faisons votre avantage."</blockquote>
+      <div class="gold-line"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashPage">
+  <nav class="dash-nav glass">
+    <span class="dash-nav-logo">W2B</span>
+    <div class="dash-nav-right">
+      <span class="dash-nav-name" id="navName"></span>
+      <span class="badge" id="navRoleBadge"></span>
+      <button class="btn-ghost" onclick="handleLogout()">← Déconnexion</button>
+    </div>
+  </nav>
+  <div class="dash-layout">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+    <main class="dash-main">
+
+      <!-- CLIENT: OVERVIEW -->
+      <div class="panel" id="panel-overview">
+        <div class="panel-label">Tableau de bord</div>
+        <h1 class="panel-title">Bonjour, <span id="welcomeName" style="color:var(--gold)"></span> 👋</h1>
+        <p class="panel-sub">Bienvenue dans votre espace client World2Blinded.</p>
+        <div class="grid3" id="clientStatsGrid" style="margin-bottom:2rem;"></div>
+        <div class="card"><h3 style="font-size:1rem;margin-bottom:1.2rem;color:var(--gold);">Prochains rendez-vous</h3><div id="upcomingAppts"></div></div>
+      </div>
+
+      <!-- CLIENT: BOOK RDV -->
+      <div class="panel" id="panel-book">
+        <div class="panel-label">Réservation</div>
+        <h1 class="panel-title">Prendre un <span class="gold-gradient">Rendez-vous</span></h1>
+        <p class="panel-sub">Réservez une consultation avec notre équipe d'experts.</p>
+        <div style="max-width:620px;">
+          <div class="steps" id="stepsRow"></div>
+          <div id="bookStep1" class="card">
+            <h3 style="font-size:0.95rem;margin-bottom:1.2rem;">Choisir un expert &amp; service</h3>
+            <p style="font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;">Expert disponible</p>
+            <div id="workerList" style="margin-bottom:1.5rem;"></div>
+            <p style="font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;">Type de service</p>
+            <div class="service-grid" id="serviceGrid"></div>
+            <div style="margin-top:1.5rem;"><button class="btn-primary" id="step1Btn" onclick="goStep(2)" disabled>CONTINUER →</button></div>
+          </div>
+          <div id="bookStep2" class="card" style="display:none;">
+            <h3 style="font-size:0.95rem;margin-bottom:1.5rem;">Choisir une date &amp; heure</h3>
+            <!-- CALENDRIER VISUEL -->
+            <div class="cal-wrap">
+              <div class="cal-header">
+                <button class="cal-nav" onclick="calPrev()">‹</button>
+                <span class="cal-month-label" id="calMonthLabel"></span>
+                <button class="cal-nav" onclick="calNext()">›</button>
+              </div>
+              <div class="cal-days-header">
+                <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+            <div id="slotsSection" style="display:none;margin-top:1.5rem;">
+              <p style="font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;">Créneaux disponibles — <span id="selectedDateLabel" style="color:var(--gold);"></span></p>
+              <div class="slot-grid" id="slotsGrid"></div>
+            </div>
+            <div style="display:flex;gap:0.8rem;margin-top:1.5rem;">
+              <button class="btn-secondary" onclick="goStep(1)">← RETOUR</button>
+              <button class="btn-primary" id="step2Btn" onclick="goStep(3)" disabled>CONTINUER →</button>
+            </div>
+          </div>
+          <div id="bookStep3" class="card" style="display:none;">
+            <h3 style="font-size:0.95rem;margin-bottom:1.2rem;">Confirmation</h3>
+            <div class="summary-box" id="bookSummary"></div>
+            <div class="field"><label>Notes (optionnel)</label><textarea id="bookNotes" placeholder="Décrivez brièvement votre projet..."></textarea></div>
+            <div style="display:flex;gap:0.8rem;">
+              <button class="btn-secondary" onclick="goStep(2)">← RETOUR</button>
+              <button class="btn-primary" onclick="confirmBooking()">CONFIRMER →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENT: MES RDV -->
+      <div class="panel" id="panel-myAppts">
+        <div class="panel-label">Historique</div>
+        <h1 class="panel-title">Mes <span class="gold-gradient">Rendez-vous</span></h1>
+        <p class="panel-sub">Suivez l'état de vos réservations.</p>
+        <div id="clientApptsList"></div>
+      </div>
+
+      <!-- CLIENT: CONTACT -->
+      <div class="panel" id="panel-contact">
+        <div class="panel-label">Support</div>
+        <h1 class="panel-title">Nous <span class="gold-gradient">Contacter</span></h1>
+        <p class="panel-sub">Envoyez un message à notre équipe.</p>
+        <div class="grid2">
+          <div class="card">
+            <h3 style="font-size:0.95rem;margin-bottom:1.2rem;">Nouveau message</h3>
+            <div class="field"><label>Sujet</label><input type="text" id="msgSubject" placeholder="Sujet de votre message" /></div>
+            <div class="field"><label>Message</label><textarea id="msgBody" placeholder="Votre message..."></textarea></div>
+            <button class="btn-primary btn-full" onclick="sendMessage()">ENVOYER →</button>
+          </div>
+          <div><h3 style="font-size:0.95rem;margin-bottom:1.2rem;">Mes messages</h3><div id="clientMsgList"></div></div>
+        </div>
+      </div>
+
+      <!-- CLIENT: MES PROJETS -->
+      <div class="panel" id="panel-projets">
+        <div class="panel-label">Suivi</div>
+        <h1 class="panel-title">Mes <span class="gold-gradient">Projets</span></h1>
+        <p class="panel-sub">Suivez l'avancement de vos projets en temps réel.</p>
+        <div id="projetsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-top:1rem;"></div>
+      </div>
+
+      <!-- CLIENT: MES LIVRABLES -->
+      <div class="panel" id="panel-livrables">
+        <div class="panel-label">Fichiers</div>
+        <h1 class="panel-title">Mes <span class="gold-gradient">Livrables</span></h1>
+        <p class="panel-sub">Téléchargez vos fichiers et documents finaux.</p>
+        <div id="livrablesGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1rem;"></div>
+      </div>
+
+      <!-- CLIENT: MON FORFAIT -->
+      <div class="panel" id="panel-forfait">
+        <div class="panel-label">Abonnement</div>
+        <h1 class="panel-title">Mon <span class="gold-gradient">Forfait</span></h1>
+        <p class="panel-sub">Détails de votre forfait actuel.</p>
+        <div id="forfaitContent" style="max-width:720px;"></div>
+      </div>
+
+      <!-- ADMIN: OVERVIEW -->
+      <div class="panel" id="panel-adminOverview">
+        <div class="panel-label">Administration</div>
+        <h1 class="panel-title">Dashboard <span class="gold-gradient">Admin</span></h1>
+        <p class="panel-sub">Vue d'ensemble de votre agence World2Blinded.</p>
+        <div class="grid4" id="adminStatsGrid" style="margin-bottom:2rem;"></div>
+        <div class="grid2">
+          <div class="card"><h3 style="font-size:0.95rem;color:var(--gold);margin-bottom:1rem;">Derniers rendez-vous</h3><div id="adminRecentAppts"></div></div>
+          <div class="card"><h3 style="font-size:0.95rem;color:var(--gold);margin-bottom:1rem;">Derniers messages</h3><div id="adminRecentMsgs"></div></div>
+        </div>
+      </div>
+
+      <!-- ADMIN: RDV -->
+      <div class="panel" id="panel-adminAppts">
+        <div class="panel-label">Gestion</div>
+        <h1 class="panel-title">Tous les <span class="gold-gradient">Rendez-vous</span></h1>
+        <p class="panel-sub">Confirmez, refusez ou terminez les rendez-vous clients.</p>
+        <div id="adminApptsList"></div>
+      </div>
+
+      <!-- ADMIN: MESSAGES -->
+      <div class="panel" id="panel-adminMessages">
+        <div class="panel-label">Communications</div>
+        <h1 class="panel-title">Messages <span class="gold-gradient">Clients</span></h1>
+        <p class="panel-sub">Cliquez sur un message pour le marquer comme lu.</p>
+        <div id="adminMsgList"></div>
+      </div>
+
+      <!-- ADMIN: CLIENTS -->
+      <div class="panel" id="panel-adminClients">
+        <div class="panel-label">Clientèle</div>
+        <h1 class="panel-title">Mes <span class="gold-gradient">Clients</span></h1>
+        <p class="panel-sub">Tous les comptes clients inscrits.</p>
+        <div class="card"><div class="table-wrap" id="adminClientsTable"></div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<div id="toast"></div>
+
+
+
+</div>
+
+<!-- ==================== PAGE: COPYWRITING ==================== -->
+<div class="w2b-page" id="pg-copywriting">
+
+
+<nav>
+  <a href="index.html" class="nav-logo">W2B</a>
+  <a href="index.html#services" class="nav-back">← Retour aux services</a>
+  <a href="dashboard.html" class="btn-rdv">PRENDRE RDV →</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-bg">
+    <div class="page-hero-line"></div>
+    <div class="page-hero-line"></div>
+  </div>
+  <div class="hero-inner">
+    <span class="hero-tag">Persuasion & Conversion</span>
+    <h1 class="hero-title"><span class="gold-gradient">Copywriting</span></h1>
+    <p class="hero-desc">Nous créons des textes qui parlent directement à vos clients, déclenchent l'émotion et transforment chaque lecteur en acheteur. Du copywriting pensé pour vendre.</p>
+    <div class="hero-actions">
+      <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">PRENDRE RENDEZ-VOUS →</a>
+    </div>
+    
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- WHAT IS -->
+  <div class="section-block">
+    <h2>Qu'est-ce que le <span class="gold-gradient">Copywriting</span> ?</h2>
+    <p>Le copywriting, c'est l'art d'écrire pour vendre. Chaque mot est choisi stratégiquement pour capter l'attention, maintenir l'intérêt, créer le désir et provoquer l'action. Chez World2Blinded, nous combinons psychologie du consommateur et écriture créative pour produire des textes qui performent.</p><p>Que ce soit pour une page de vente, une séquence email ou un script publicitaire, notre approche est toujours la même : comprendre votre audience, identifier ses douleurs profondes et lui présenter votre offre comme la solution évidente.</p>
+  </div>
+
+  <!-- WHAT INCLUDED -->
+  <div class="section-block">
+    <h2>Ce qui est <span class="gold-gradient">inclus</span></h2>
+    <div class="includes-grid">
+      <div class="include-card"><div class="include-icon">✍️</div><h4>Pages de vente</h4><p>Longues ou courtes, nos pages de vente sont conçues pour convertir avec des structures éprouvées comme AIDA et PAS.</p></div><div class="include-card"><div class="include-icon">📧</div><h4>Séquences email</h4><p>Emails de bienvenue, nurturing, relance panier — des séquences complètes qui automatisent vos ventes.</p></div><div class="include-card"><div class="include-icon">🎬</div><h4>Scripts vidéo & publicités</h4><p>Scripts YouTube, VSL, TikTok et Meta Ads qui accrochent dès les 3 premières secondes.</p></div><div class="include-card"><div class="include-icon">🚀</div><h4>Landing pages</h4><p>Pages d'atterrissage ultra-ciblées qui convertissent le trafic froid en prospects qualifiés.</p></div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="section-block">
+    <h2>Notre <span class="gold-gradient">processus</span></h2>
+    <div class="process-steps">
+      <div class="process-step"><div class="step-num">1</div><div class="step-body"><h4>Découverte & brief</h4><p>On analyse votre offre, votre cible, vos concurrents et vos objectifs de conversion.</p></div></div><div class="process-step"><div class="step-num">2</div><div class="step-body"><h4>Recherche & stratégie</h4><p>On identifie les mots, les angles et les émotions qui font résonner votre message.</p></div></div><div class="process-step"><div class="step-num">3</div><div class="step-body"><h4>Rédaction</h4><p>On écrit un premier jet complet en suivant les structures de conversion les plus efficaces.</p></div></div><div class="process-step"><div class="step-num">4</div><div class="step-body"><h4>Révision & livraison</h4><p>On peaufine jusqu'à la perfection. Vous recevez le fichier final prêt à être publié.</p></div></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-block">
+    <h2>Questions <span class="gold-gradient">fréquentes</span></h2>
+    <div id="faq">
+      <div class="faq-item"><div class="faq-q"><span>Combien de temps prend une page de vente ?</span><span class="faq-icon">+</span></div><div class="faq-a">En général, entre 5 et 10 jours ouvrés selon la complexité du projet. Pour les projets urgents, un délai express est possible.</div></div><div class="faq-item"><div class="faq-q"><span>Combien de révisions sont incluses ?</span><span class="faq-icon">+</span></div><div class="faq-a">Nous incluons 2 rondes de révisions dans tous nos forfaits. Des révisions supplémentaires sont disponibles à la demande.</div></div><div class="faq-item"><div class="faq-q"><span>Est-ce que vous garantissez les résultats ?</span><span class="faq-icon">+</span></div><div class="faq-a">Nous ne pouvons garantir un chiffre précis, mais notre approche basée sur les données et les meilleures pratiques est conçue pour maximiser vos conversions.</div></div><div class="faq-item"><div class="faq-q"><span>Dans quelle langue rédigez-vous ?</span><span class="faq-icon">+</span></div><div class="faq-a">Nous rédigeons principalement en français. Des textes en anglais ou bilingues sont aussi disponibles sur demande.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bottom">
+    <h2>Prêt à commencer votre projet <span class="gold-gradient">Copywriting</span> ?</h2>
+    <p>Discutons de votre projet et voyons comment nos textes peuvent transformer vos visiteurs en clients.</p>
+    <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">RÉSERVER UNE CONSULTATION →</a>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">World2Blinded</a>
+  <p>© 2026 World2Blinded. Tous droits réservés.</p>
+</footer>
+
+
+
+</div>
+
+<!-- ==================== PAGE: STRATEGIE ==================== -->
+<div class="w2b-page" id="pg-strategie">
+
+
+<nav>
+  <a href="index.html" class="nav-logo">W2B</a>
+  <a href="index.html#services" class="nav-back">← Retour aux services</a>
+  <a href="dashboard.html" class="btn-rdv">PRENDRE RDV →</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-bg">
+    <div class="page-hero-line"></div>
+    <div class="page-hero-line"></div>
+  </div>
+  <div class="hero-inner">
+    <span class="hero-tag">Planification & Croissance</span>
+    <h1 class="hero-title"><span class="gold-gradient">Stratégie de Contenu</span></h1>
+    <p class="hero-desc">Publiez moins, impactez plus. Nous construisons votre stratégie de contenu de A à Z pour attirer, engager et convertir votre audience cible.</p>
+    <div class="hero-actions">
+      <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">PRENDRE RENDEZ-VOUS →</a>
+    </div>
+    
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- WHAT IS -->
+  <div class="section-block">
+    <h2>Qu'est-ce que le <span class="gold-gradient">Stratégie de Contenu</span> ?</h2>
+    <p>Une stratégie de contenu efficace, c'est bien plus que publier des articles de blogue. C'est construire un écosystème cohérent qui positionne votre marque comme l'autorité dans votre domaine, attire du trafic organique et nourrit vos prospects jusqu'à l'achat.</p><p>Chez World2Blinded, on analyse votre situation actuelle, on identifie les opportunités et on crée un plan d'action concret, mesurable et aligné avec vos objectifs d'affaires.</p>
+  </div>
+
+  <!-- WHAT INCLUDED -->
+  <div class="section-block">
+    <h2>Ce qui est <span class="gold-gradient">inclus</span></h2>
+    <div class="includes-grid">
+      <div class="include-card"><div class="include-icon">🔍</div><h4>Audit de contenu</h4><p>Analyse complète de votre contenu existant pour identifier ce qui fonctionne, ce qui doit être amélioré et ce qui manque.</p></div><div class="include-card"><div class="include-icon">📅</div><h4>Calendrier éditorial</h4><p>Un plan de publication structuré sur 3 à 6 mois avec sujets, formats, canaux et dates de publication.</p></div><div class="include-card"><div class="include-icon">📈</div><h4>Recherche de mots-clés SEO</h4><p>Identification des opportunités SEO à fort potentiel pour générer du trafic qualifié vers votre site.</p></div><div class="include-card"><div class="include-icon">📊</div><h4>Tableau de bord Analytics</h4><p>Mise en place des KPIs et des outils de suivi pour mesurer l'impact de votre contenu.</p></div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="section-block">
+    <h2>Notre <span class="gold-gradient">processus</span></h2>
+    <div class="process-steps">
+      <div class="process-step"><div class="step-num">1</div><div class="step-body"><h4>Audit & analyse</h4><p>On examine votre présence en ligne, votre audience et vos concurrents pour identifier les opportunités.</p></div></div><div class="process-step"><div class="step-num">2</div><div class="step-body"><h4>Définition de la stratégie</h4><p>On établit vos objectifs, vos personas, vos thématiques clés et vos formats prioritaires.</p></div></div><div class="process-step"><div class="step-num">3</div><div class="step-body"><h4>Création du calendrier</h4><p>On construit un calendrier éditorial détaillé sur plusieurs mois avec tous les briefs de contenu.</p></div></div><div class="process-step"><div class="step-num">4</div><div class="step-body"><h4>Suivi & optimisation</h4><p>On analyse les performances mensuellement et on ajuste la stratégie selon les résultats.</p></div></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-block">
+    <h2>Questions <span class="gold-gradient">fréquentes</span></h2>
+    <div id="faq">
+      <div class="faq-item"><div class="faq-q"><span>En combien de temps voit-on des résultats ?</span><span class="faq-icon">+</span></div><div class="faq-a">Les premiers résultats SEO apparaissent généralement entre 3 et 6 mois. Les résultats sur les réseaux sociaux peuvent être plus rapides.</div></div><div class="faq-item"><div class="faq-q"><span>Est-ce que vous créez aussi le contenu ?</span><span class="faq-icon">+</span></div><div class="faq-a">La stratégie est notre cœur de métier, mais nous pouvons aussi prendre en charge la rédaction du contenu en ajoutant ce service.</div></div><div class="faq-item"><div class="faq-q"><span>C'est quoi un persona ?</span><span class="faq-icon">+</span></div><div class="faq-a">Un persona est le portrait détaillé de votre client idéal : ses habitudes, ses douleurs, ses aspirations. C'est la base de toute stratégie efficace.</div></div><div class="faq-item"><div class="faq-q"><span>Faut-il un site web pour avoir une stratégie de contenu ?</span><span class="faq-icon">+</span></div><div class="faq-a">Un site web est recommandé mais pas obligatoire. On peut aussi bâtir une stratégie basée sur les réseaux sociaux, YouTube ou les newsletters.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bottom">
+    <h2>Prêt à commencer votre projet <span class="gold-gradient">Stratégie de Contenu</span> ?</h2>
+    <p>Commençons par un audit gratuit de votre présence en ligne pour identifier les meilleures opportunités pour votre business.</p>
+    <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">RÉSERVER UNE CONSULTATION →</a>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">World2Blinded</a>
+  <p>© 2026 World2Blinded. Tous droits réservés.</p>
+</footer>
+
+
+
+</div>
+
+<!-- ==================== PAGE: SITEWEB ==================== -->
+<div class="w2b-page" id="pg-siteweb">
+
+
+<nav>
+  <a href="index.html" class="nav-logo">W2B</a>
+  <a href="index.html#services" class="nav-back">← Retour aux services</a>
+  <a href="dashboard.html" class="btn-rdv">PRENDRE RDV →</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-bg">
+    <div class="page-hero-line"></div>
+    <div class="page-hero-line"></div>
+  </div>
+  <div class="hero-inner">
+    <span class="hero-tag">Design & Développement Web</span>
+    <h1 class="hero-title"><span class="gold-gradient">Création de Site Web</span></h1>
+    <p class="hero-desc">Un site web professionnel, rapide et optimisé qui incarne votre marque et transforme chaque visiteur en client potentiel. Conçu pour convertir.</p>
+    <div class="hero-actions">
+      <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">PRENDRE RENDEZ-VOUS →</a>
+    </div>
+    
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- WHAT IS -->
+  <div class="section-block">
+    <h2>Qu'est-ce que le <span class="gold-gradient">Création de Site Web</span> ?</h2>
+    <p>Votre site web est votre meilleur vendeur — il travaille 24h/24, 7j/7. Un site mal conçu perd des clients chaque jour. Chez World2Blinded, nous créons des sites modernes et performants qui combinent esthétique soignée, expérience utilisateur fluide et optimisation SEO de base.</p><p>Chaque projet est unique. On commence par comprendre votre activité, votre cible et vos objectifs pour concevoir un site qui vous ressemble et qui génère des résultats concrets.</p>
+  </div>
+
+  <!-- WHAT INCLUDED -->
+  <div class="section-block">
+    <h2>Ce qui est <span class="gold-gradient">inclus</span></h2>
+    <div class="includes-grid">
+      <div class="include-card"><div class="include-icon">🎨</div><h4>Design sur mesure</h4><p>Interface visuelle unique conçue selon votre identité de marque. Aucun template générique — tout est pensé pour vous.</p></div><div class="include-card"><div class="include-icon">📱</div><h4>Responsive & mobile-first</h4><p>Votre site sera parfait sur tous les écrans : ordinateur, tablette et téléphone.</p></div><div class="include-card"><div class="include-icon">⚡</div><h4>Performance & vitesse</h4><p>Sites optimisés pour un chargement rapide, ce qui améliore le SEO et réduit les abandons.</p></div><div class="include-card"><div class="include-icon">🔎</div><h4>SEO de base intégré</h4><p>Structure technique optimisée, balises meta, vitesse et mots-clés pour bien démarrer sur Google.</p></div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="section-block">
+    <h2>Notre <span class="gold-gradient">processus</span></h2>
+    <div class="process-steps">
+      <div class="process-step"><div class="step-num">1</div><div class="step-body"><h4>Brief & découverte</h4><p>On discute de vos besoins, votre identité visuelle, vos objectifs et vos pages prioritaires.</p></div></div><div class="process-step"><div class="step-num">2</div><div class="step-body"><h4>Wireframes & maquettes</h4><p>On vous présente la structure et le design du site avant de commencer le développement.</p></div></div><div class="process-step"><div class="step-num">3</div><div class="step-body"><h4>Développement</h4><p>On construit votre site avec un code propre, rapide et facile à maintenir.</p></div></div><div class="process-step"><div class="step-num">4</div><div class="step-body"><h4>Tests & mise en ligne</h4><p>On teste tout sur tous les appareils et navigateurs avant de lancer votre site.</p></div></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-block">
+    <h2>Questions <span class="gold-gradient">fréquentes</span></h2>
+    <div id="faq">
+      <div class="faq-item"><div class="faq-q"><span>Quel est le délai pour créer un site ?</span><span class="faq-icon">+</span></div><div class="faq-a">Un site vitrine de 5 à 8 pages prend généralement 3 à 4 semaines. Un site plus complexe peut prendre 6 à 8 semaines.</div></div><div class="faq-item"><div class="faq-q"><span>Est-ce que je pourrai modifier mon site moi-même ?</span><span class="faq-icon">+</span></div><div class="faq-a">Oui, on vous livre votre site avec un panel d'administration simple pour modifier les textes et images sans coder.</div></div><div class="faq-item"><div class="faq-q"><span>Est-ce que l'hébergement est inclus ?</span><span class="faq-icon">+</span></div><div class="faq-a">L'hébergement n'est pas inclus mais on vous guide pour choisir le meilleur hébergeur selon votre budget.</div></div><div class="faq-item"><div class="faq-q"><span>Créez-vous des boutiques en ligne ?</span><span class="faq-icon">+</span></div><div class="faq-a">Oui, on crée des boutiques e-commerce complètes avec paiement en ligne, gestion des stocks et suivi des commandes.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bottom">
+    <h2>Prêt à commencer votre projet <span class="gold-gradient">Création de Site Web</span> ?</h2>
+    <p>Votre site web est votre vitrine en ligne. Faisons-en un outil de vente puissant qui travaille pour vous 24h/24.</p>
+    <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">RÉSERVER UNE CONSULTATION →</a>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">World2Blinded</a>
+  <p>© 2026 World2Blinded. Tous droits réservés.</p>
+</footer>
+
+
+
+</div>
+
+<!-- ==================== PAGE: RESEAUX ==================== -->
+<div class="w2b-page" id="pg-reseaux">
+
+
+<nav>
+  <a href="index.html" class="nav-logo">W2B</a>
+  <a href="index.html#services" class="nav-back">← Retour aux services</a>
+  <a href="dashboard.html" class="btn-rdv">PRENDRE RDV →</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-bg">
+    <div class="page-hero-line"></div>
+    <div class="page-hero-line"></div>
+  </div>
+  <div class="hero-inner">
+    <span class="hero-tag">Engagement & Visibilité</span>
+    <h1 class="hero-title"><span class="gold-gradient">Réseaux Sociaux</span></h1>
+    <p class="hero-desc">Transformez vos réseaux sociaux en machine à générer des clients. Contenu stratégique, communauté engagée et publicités ciblées qui convertissent.</p>
+    <div class="hero-actions">
+      <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">PRENDRE RENDEZ-VOUS →</a>
+    </div>
+    
+  </div>
+</section>
+
+<div class="page-content">
+
+  <!-- WHAT IS -->
+  <div class="section-block">
+    <h2>Qu'est-ce que le <span class="gold-gradient">Réseaux Sociaux</span> ?</h2>
+    <p>Les réseaux sociaux sont devenus le premier point de contact entre une marque et ses clients potentiels. Mais publier au hasard ne suffit plus. Il faut une stratégie claire, du contenu adapté à chaque plateforme et une approche publicitaire précise pour obtenir des résultats mesurables.</p><p>Chez World2Blinded, on prend en charge votre présence sociale de A à Z — de la création des visuels à la rédaction des textes, en passant par la gestion des publicités et l'animation de votre communauté.</p>
+  </div>
+
+  <!-- WHAT INCLUDED -->
+  <div class="section-block">
+    <h2>Ce qui est <span class="gold-gradient">inclus</span></h2>
+    <div class="includes-grid">
+      <div class="include-card"><div class="include-icon">📸</div><h4>Création de contenu</h4><p>Visuels, carrousels, Reels et Stories — tout le contenu dont vous avez besoin, planifié et prêt à publier.</p></div><div class="include-card"><div class="include-icon">💬</div><h4>Community management</h4><p>On répond à vos messages, commentaires et mentions pour maintenir une communauté active et engagée.</p></div><div class="include-card"><div class="include-icon">🎯</div><h4>Publicités Meta & TikTok</h4><p>Campagnes publicitaires ciblées sur Facebook, Instagram et TikTok pour atteindre exactement votre clientèle idéale.</p></div><div class="include-card"><div class="include-icon">📉</div><h4>Rapports de performance</h4><p>Rapport mensuel détaillé avec toutes les métriques importantes et les recommandations d'optimisation.</p></div>
+    </div>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="section-block">
+    <h2>Notre <span class="gold-gradient">processus</span></h2>
+    <div class="process-steps">
+      <div class="process-step"><div class="step-num">1</div><div class="step-body"><h4>Audit des réseaux existants</h4><p>On analyse votre présence actuelle, vos concurrents et votre audience pour identifier les opportunités.</p></div></div><div class="process-step"><div class="step-num">2</div><div class="step-body"><h4>Stratégie & ligne éditoriale</h4><p>On définit votre ton, vos thématiques, votre fréquence de publication et votre mix de contenu.</p></div></div><div class="process-step"><div class="step-num">3</div><div class="step-body"><h4>Création & planification</h4><p>On crée le contenu du mois et on le planifie sur les plateformes. Vous approuvez avant publication.</p></div></div><div class="process-step"><div class="step-num">4</div><div class="step-body"><h4>Animation & optimisation</h4><p>On gère votre communauté quotidiennement et on optimise selon les performances chaque semaine.</p></div></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-block">
+    <h2>Questions <span class="gold-gradient">fréquentes</span></h2>
+    <div id="faq">
+      <div class="faq-item"><div class="faq-q"><span>Sur quelles plateformes intervenez-vous ?</span><span class="faq-icon">+</span></div><div class="faq-a">Instagram, Facebook, TikTok, LinkedIn et Pinterest. On vous conseille les plateformes les plus pertinentes selon votre business.</div></div><div class="faq-item"><div class="faq-q"><span>Combien de publications par semaine ?</span><span class="faq-icon">+</span></div><div class="faq-a">Selon le forfait choisi, entre 3 et 7 publications par semaine par plateforme, incluant posts, Stories et Reels.</div></div><div class="faq-item"><div class="faq-q"><span>Est-ce que je garde le contrôle de mes comptes ?</span><span class="faq-icon">+</span></div><div class="faq-a">Absolument. Vous gardez tous les accès. On travaille en collaboration et vous approuvez le contenu chaque semaine.</div></div><div class="faq-item"><div class="faq-q"><span>Les publicités sont-elles incluses ?</span><span class="faq-icon">+</span></div><div class="faq-a">La gestion des publicités est incluse dans certains forfaits. Le budget publicitaire est toujours à votre charge et géré en toute transparence.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bottom">
+    <h2>Prêt à commencer votre projet <span class="gold-gradient">Réseaux Sociaux</span> ?</h2>
+    <p>Vos réseaux sociaux ont le potentiel de devenir votre principal canal d'acquisition. Laissez-nous vous montrer comment.</p>
+    <a href="dashboard.html" class="btn-rdv" style="padding:0.9rem 2rem;font-size:0.75rem;">RÉSERVER UNE CONSULTATION →</a>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">World2Blinded</a>
+  <p>© 2026 World2Blinded. Tous droits réservés.</p>
+</footer>
+
+
+
+</div>
+
+<script>
+/* ==================== DASHBOARD JS ==================== */
+// ── DATA ──
+const DB = { get: k => JSON.parse(localStorage.getItem('w2b_'+k)||'null'), set: (k,v) => localStorage.setItem('w2b_'+k,JSON.stringify(v)) };
+const SERVICES = [
+  {id:'copywriting',      name:'Copywriting',          features:['Pages de vente','Emails marketing','Scripts vidéo','Landing pages']},
+  {id:'content-strategy', name:'Stratégie de Contenu', features:['Audit de contenu','Calendrier éditorial','SEO optimisé','Analytics']},
+  {id:'web-design',       name:'Création de Site Web', features:['Design sur mesure','Développement complet','Responsive mobile','SEO optimisé']},
+  {id:'social-media',     name:'Réseaux Sociaux',      features:['Posts optimisés','Stories engageantes','Publicités ciblées','Community']},
+];
+const SLOTS = ['09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00'];
+
+function initDB(){
+  if(!DB.get('users')) DB.set('users',[{id:'admin',name:'World2Blinded',email:'admin@world2blinded.com',password:'admin123',role:'admin',createdAt:new Date().toISOString()}]);
+  if(!DB.get('appointments')) DB.set('appointments',[]);
+  if(!DB.get('messages'))     DB.set('messages',[]);
+}
+initDB();
+
+// ── AUTH ──
+let CU = DB.get('session'), selRole = 'client';
+
+function selectRole(r){ selRole=r; document.getElementById('roleClientBtn').classList.toggle('active',r==='client'); document.getElementById('roleWorkerBtn').classList.toggle('active',r==='worker'); }
+function switchToRegister(){ document.getElementById('loginSection').style.display='none'; document.getElementById('registerSection').style.display='block'; document.getElementById('authDesc').textContent='Créez votre compte'; clearErr(); }
+function switchToLogin(){ document.getElementById('registerSection').style.display='none'; document.getElementById('loginSection').style.display='block'; document.getElementById('authDesc').textContent='Connectez-vous à votre espace client'; clearErr(); }
+function clearErr(){ document.getElementById('authError').style.display='none'; }
+function showErr(m){ const e=document.getElementById('authError'); e.textContent=m; e.style.display='block'; }
+
+
+// ── GOOGLE LOGIN ──
+function handleGoogleLogin(response) {
+  try {
+    // Decode JWT token from Google
+    const base64 = response.credential.split('.')[1];
+    const decoded = JSON.parse(atob(base64));
+    const name  = decoded.name  || decoded.given_name || 'Utilisateur';
+    const email = decoded.email;
+    const googleId = decoded.sub;
+
+    const users = DB.get('users') || [];
+    let user = users.find(u => u.email === email);
+
+    if (!user) {
+      // New user - auto-register
+      user = {
+        id: 'g_' + googleId,
+        name: name,
+        email: email,
+        password: null,
+        role: 'client',
+        googleId: googleId,
+        createdAt: new Date().toISOString()
+      };
+      users.push(user);
+      DB.set('users', users);
+      // Email de bienvenue
+      sendEmail({
+        to_name:   name,
+        to_email:  email,
+        subject:   'Bienvenue chez World2Blinded !',
+        message:   'Bonjour ' + name + ',\n\nVotre compte World2Blinded a été créé avec succès via Google. Bienvenue dans notre communauté premium !\n\nVous pouvez dès maintenant prendre un rendez-vous avec notre équipe.\n\nÀ bientôt,\nL\'équipe World2Blinded',
+        from_name: 'World2Blinded'
+      });
+    }
+
+    DB.set('session', user);
+    CU = user;
+    loadDash();
+  } catch(e) {
+    showErr('Erreur de connexion Google. Réessayez.');
+    console.error('Google login error:', e);
+  }
+}
+
+function handleLogin(){
+  const email=document.getElementById('loginEmail').value.trim(), pw=document.getElementById('loginPassword').value;
+  if(!email||!pw){showErr('Veuillez remplir tous les champs.');return;}
+  const u=(DB.get('users')||[]).find(u=>u.email===email&&u.password===pw);
+  if(!u){showErr('Email ou mot de passe incorrect.');return;}
+  DB.set('session',u); CU=u; loadDash();
+}
+// ── EMAILJS HELPER ──
+function sendEmail(templateParams) {
+  emailjs.send('service_qam1ize', 'template_omzbw2t', templateParams)
+    .catch(function(err) { console.warn('EmailJS error:', err); });
+}
+
+function handleRegister(){
+  const name=document.getElementById('regName').value.trim(), email=document.getElementById('regEmail').value.trim(), pw=document.getElementById('regPassword').value;
+  if(!name||!email||!pw){showErr('Veuillez remplir tous les champs.');return;}
+  if(pw.length<6){showErr('Mot de passe trop court (min. 6 caractères).');return;}
+  const users=DB.get('users')||[];
+  if(users.find(u=>u.email===email)){showErr('Cet email est déjà utilisé.');return;}
+  const u={id:'u_'+Date.now(),name,email,password:pw,role:selRole,createdAt:new Date().toISOString()};
+  users.push(u); DB.set('users',users); DB.set('session',u); CU=u;
+  // Email de bienvenue
+  sendEmail({
+    to_name:  name,
+    to_email: email,
+    subject:  'Bienvenue chez World2Blinded !',
+    message:  'Bonjour ' + name + ',\n\nVotre compte World2Blinded a été créé avec succès. Bienvenue dans notre communauté premium !\n\nVous pouvez dès maintenant prendre un rendez-vous avec notre équipe.\n\nÀ bientôt,\nL\'équipe World2Blinded',
+    from_name: 'World2Blinded'
+  });
+  loadDash();
+}
+function handleLogout(){ DB.set('session',null); CU=null; document.getElementById('dashPage').style.display='none'; document.getElementById('authPage').style.display='flex'; }
+
+// ── DASH LOADER ──
+function loadDash(){
+  document.getElementById('authPage').style.display='none';
+  document.getElementById('dashPage').style.display='block';
+  document.getElementById('navName').textContent=CU.name;
+  document.getElementById('welcomeName').textContent=CU.name.split(' ')[0];
+  const rb=document.getElementById('navRoleBadge');
+  rb.textContent=CU.role==='admin'?'Admin':'Client';
+  rb.className='badge '+(CU.role==='admin'?'badge-admin':'badge-client');
+  buildSidebar();
+  showPanel(CU.role==='admin'?'adminOverview':'overview');
+}
+
+function buildSidebar(){
+  const isAdmin=CU.role==='admin';
+  const items=isAdmin
+    ?[{id:'adminOverview',icon:'📊',label:"Vue d'ensemble"},{id:'adminAppts',icon:'📅',label:'Rendez-vous'},{id:'adminMessages',icon:'✉️',label:'Messages',badge:true},{id:'adminClients',icon:'👥',label:'Clients'}]
+    :[{id:'overview',icon:'🏠',label:'Accueil'},{id:'projets',icon:'📁',label:'Mes Projets'},{id:'livrables',icon:'📦',label:'Mes Livrables'},{id:'forfait',icon:'⭐',label:'Mon Forfait'},{id:'book',icon:'📅',label:'Prendre RDV'},{id:'myAppts',icon:'🗓️',label:'Mes rendez-vous'},{id:'contact',icon:'✉️',label:'Contact'}];
+  document.getElementById('dashSidebar').innerHTML=items.map(it=>{
+    let bdg='';
+    if(it.badge){ const n=(DB.get('messages')||[]).filter(m=>m.status==='unread').length; if(n>0) bdg=`<span class="sidebar-unread">${n}</span>`; }
+    return `<div class="sidebar-nav-item" id="nav-${it.id}" onclick="showPanel('${it.id}')"><span class="nav-icon">${it.icon}</span><span>${it.label}</span>${bdg}</div>`;
+  }).join('');
+}
+
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item').forEach(n=>n.classList.remove('active'));
+  const panel=document.getElementById('panel-'+id), nav=document.getElementById('nav-'+id);
+  if(panel) panel.classList.add('active');
+  if(nav)   nav.classList.add('active');
+  ({overview:renderClientOverview, myAppts:renderClientAppts, contact:renderContactPanel, adminOverview:renderAdminOverview, adminAppts:renderAdminAppts, adminMessages:renderAdminMsgs, adminClients:renderAdminClients, book:initBooking, projets:renderProjets, livrables:renderLivrables, forfait:renderForfait})[id]?.();
+}
+
+// ── MES PROJETS ──
+function renderProjets(){
+  var SVC={copywriting:{icon:'✍️',name:'Copywriting',steps:['Brief client','Recherche & analyse','Rédaction','Révisions','Livraison finale']},strategie:{icon:'📊',name:'Stratégie de Contenu',steps:['Audit de contenu','Analyse concurrentielle','Élaboration du plan','Création du calendrier','Mise en place & suivi']},siteweb:{icon:'🌐',name:'Création de Site Web',steps:['Wireframes','Design UI','Développement','Tests & QA','Mise en ligne']},reseaux:{icon:'📱',name:'Réseaux Sociaux',steps:['Audit des comptes','Stratégie éditoriale','Création des visuels','Publication','Analyse des résultats']}};
+  var appts=(DB.get('appointments')||[]).filter(function(a){return a.clientId===CU.id&&a.status==='confirmed';});
+  var el=document.getElementById('projetsGrid');
+  if(!appts.length){el.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📁</div><p>Aucun projet actif. <a onclick="showPanel(\'book\')" style="color:var(--gold);cursor:pointer;">Démarrer un projet →</a></p></div>';return;}
+  el.innerHTML=appts.map(function(a){
+    var svc=SVC[a.service]||{icon:'📋',name:a.service,steps:['En cours']};
+    var progress=Math.min(Math.floor((Date.now()-new Date(a.date).getTime())/(1000*60*60*24*3))+1,svc.steps.length-1);
+    var pct=Math.round((progress/svc.steps.length)*100);
+    return '<div class="card" style="border-left:3px solid var(--gold);"><div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;"><span style="font-size:1.8rem;">'+svc.icon+'</span><div><div style="font-weight:700;font-size:1rem;">'+svc.name+'</div><div style="font-size:0.75rem;color:var(--muted);">Démarré le '+fmt(a.date)+'</div></div></div>'
+      +'<div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:0.4rem;"><span>Progression</span><span style="color:var(--gold);font-weight:600;">'+pct+'%</span></div><div style="height:4px;background:rgba(255,255,255,0.07);border-radius:2px;"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;"></div></div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:0.5rem;">'+svc.steps.map(function(s,i){var col=i<progress?'color:var(--gold);':i===progress?'color:var(--fg);font-weight:600;':'color:var(--muted);opacity:0.5;';var ic=i<progress?'✅':i===progress?'⏳':'○';return '<div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;'+col+'"><span>'+ic+'</span>'+s+'</div>';}).join('')+'</div></div>';
+  }).join('');
+}
+
+// ── MES LIVRABLES ──
+function renderLivrables(){
+  var ICONS={copywriting:'✍️',strategie:'📊',siteweb:'🌐',reseaux:'📱'};
+  var appts=(DB.get('appointments')||[]).filter(function(a){return a.clientId===CU.id&&a.status==='completed';});
+  var el=document.getElementById('livrablesGrid');
+  if(!appts.length){el.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📦</div><p>Vos livrables apparaîtront ici une fois votre projet terminé.</p></div>';return;}
+  el.innerHTML=appts.map(function(a){return '<div class="card" style="display:flex;align-items:center;gap:1rem;"><div style="width:48px;height:48px;border:1px solid rgba(212,175,55,0.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">'+(ICONS[a.service]||'📄')+'</div><div style="flex:1;"><div style="font-weight:600;font-size:0.9rem;">'+svcName(a.service)+'</div><div style="font-size:0.75rem;color:var(--muted);">Livré le '+fmt(a.date)+'</div></div><button class="btn-secondary" style="padding:0.5rem 1rem;font-size:0.65rem;" onclick="alert(\'Contactez-nous pour recevoir vos fichiers.\')">↓ TÉLÉCHARGER</button></div>';}).join('');
+}
+
+// ── MON FORFAIT ──
+function renderForfait(){
+  var F={copywriting:[{n:'Starter',p:'497$/mois',f:['3 pages de vente','5 emails marketing','2 révisions incluses']},{n:'Pro',p:'997$/mois',f:['10 pages de vente','15 emails marketing','Scripts vidéo','Révisions illimitées']},{n:'Elite',p:'1997$/mois',f:['Projets illimités','Stratégie complète','Manager dédié','Priorité absolue']}],strategie:[{n:'Starter',p:'397$/mois',f:['Audit de contenu','Calendrier 30 jours','2 révisions']},{n:'Pro',p:'797$/mois',f:['Stratégie 90 jours','SEO avancé','Reporting mensuel','Révisions illimitées']},{n:'Elite',p:'1497$/mois',f:['Stratégie annuelle','Équipe dédiée','Analytics avancés','Support prioritaire']}],siteweb:[{n:'Starter',p:'1497$',f:['Site 5 pages','Design sur mesure','Responsive','1 an hébergement']},{n:'Pro',p:'2997$',f:['Site 15 pages','E-commerce','SEO optimisé','Support 6 mois']},{n:'Elite',p:'5997$',f:['Site illimité','Fonctions custom','Intégrations API','Support 1 an']}],reseaux:[{n:'Starter',p:'297$/mois',f:['2 réseaux','12 posts/mois','Visuels inclus']},{n:'Pro',p:'597$/mois',f:['4 réseaux','30 posts/mois','Stories & Reels','Reporting hebdo']},{n:'Elite',p:'997$/mois',f:['Réseaux illimités','Contenu illimité','Gestion communauté','Manager dédié']}]};
+  var appts=(DB.get('appointments')||[]).filter(function(a){return a.clientId===CU.id;});
+  var lastSvc=appts.length?appts[appts.length-1].service:null;
+  var el=document.getElementById('forfaitContent');
+  if(!lastSvc||!F[lastSvc]){el.innerHTML='<div class="empty"><div class="empty-icon">⭐</div><p>Prenez un rendez-vous pour découvrir nos forfaits.</p></div>';return;}
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;">'+F[lastSvc].map(function(f,i){return '<div class="card" style="text-align:center;border:1px solid '+(i===1?'var(--gold)':'rgba(212,175,55,0.1)')+';position:relative;">'+(i===1?'<div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#050505;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;padding:0.25rem 0.8rem;">POPULAIRE</div>':'')+'<div style="font-family:\'Playfair Display\',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;">'+f.n+'</div><div style="font-size:1.4rem;font-weight:800;color:var(--gold);margin-bottom:1rem;">'+f.p+'</div><ul style="list-style:none;text-align:left;font-size:0.82rem;color:var(--muted);display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.2rem;">'+f.f.map(function(ft){return '<li>✓ '+ft+'</li>';}).join('')+'</ul><button class="btn-'+(i===1?'primary':'secondary')+' btn-full" style="font-size:0.65rem;" onclick="showPanel(\'book\')">CHOISIR →</button></div>';}).join('')+'</div>';
+}
+
+// ── HELPERS ──
+function bdg(s){ const map={pending:'badge-pending',confirmed:'badge-confirmed',completed:'badge-completed',cancelled:'badge-cancelled',unread:'badge-unread',read:'badge-read',replied:'badge-replied'}; const lbl={pending:'En attente',confirmed:'Confirmé',completed:'Terminé',cancelled:'Annulé',unread:'Non lu',read:'Lu',replied:'Répondu'}; return `<span class="badge ${map[s]||''}">${lbl[s]||s}</span>`; }
+function fmt(d){ return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function svcName(id){ return SERVICES.find(s=>s.id===id)?.name||id; }
+
+// ── CLIENT OVERVIEW ──
+function renderClientOverview(){
+  const appts=(DB.get('appointments')||[]).filter(a=>a.clientId===CU.id);
+  const msgs=(DB.get('messages')||[]).filter(m=>m.clientId===CU.id);
+  document.getElementById('clientStatsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num">${appts.length}</div><div class="stat-lbl">Rendez-vous</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num">${appts.filter(a=>a.status==='confirmed').length}</div><div class="stat-lbl">Confirmés</div></div>
+    <div class="stat-card"><div class="stat-icon">✉️</div><div class="stat-num">${msgs.length}</div><div class="stat-lbl">Messages</div></div>`;
+  const up=appts.filter(a=>a.status==='pending'||a.status==='confirmed').slice(0,3);
+  document.getElementById('upcomingAppts').innerHTML=up.length
+    ?up.map(a=>`<div class="appt-card"><div class="appt-top"><div><div style="font-weight:600;">${svcName(a.service)}</div></div>${bdg(a.status)}</div><div class="appt-meta"><span>📅 ${a.date}</span><span>🕐 ${a.time}</span></div></div>`).join('')
+    :`<div class="empty"><div class="empty-icon">📅</div><p>Aucun rendez-vous à venir. <a onclick="showPanel('book')" style="color:var(--gold);cursor:pointer;">Prendre un RDV</a></p></div>`;
+}
+
+// ── BOOKING ──
+let bk={workerId:null,service:null,date:null,time:null};
+
+function initBooking(){
+  bk={workerId:null,service:null,date:null,time:null};
+  renderSteps(1);
+  [1,2,3].forEach(i=>document.getElementById('bookStep'+i).style.display=i===1?'block':'none');
+  document.getElementById('workerList').innerHTML=(DB.get('users')||[]).filter(u=>u.role==='admin'||u.role==='worker').map(w=>`
+    <div class="worker-btn" id="wb-${w.id}" onclick="selWorker('${w.id}')">
+      <div class="worker-avatar">👤</div>
+      <div style="flex:1;text-align:left;"><div style="font-weight:600;font-size:0.88rem;">${w.name}</div><div style="font-size:0.75rem;color:var(--muted);">Expert Copywriting & Stratégie</div></div>
+      <span style="color:var(--muted);">→</span>
+    </div>`).join('');
+  document.getElementById('serviceGrid').innerHTML=SERVICES.map(s=>`<button class="service-tag" id="st-${s.id}" onclick="selService('${s.id}')">${s.name}</button>`).join('');
+  document.getElementById('step1Btn').disabled=true;
+  document.getElementById('bookDate').value='';
+  document.getElementById('slotsSection').style.display='none';
+}
+
+function renderSteps(active){
+  const row=document.getElementById('stepsRow'); if(!row) return;
+  row.innerHTML=[1,2,3].map((n,i)=>`
+    ${i>0?`<div class="step-line ${active>n-1?'step-line-done':''}"></div>`:''}
+    <div class="step-num ${active>n?'step-done':active===n?'step-active':'step-off'}">${n}</div>`).join('');
+}
+
+function selWorker(id){ bk.workerId=id; document.querySelectorAll('.worker-btn').forEach(b=>b.classList.remove('sel')); document.getElementById('wb-'+id)?.classList.add('sel'); checkS1(); }
+function selService(id){ bk.service=id; document.querySelectorAll('.service-tag').forEach(b=>b.classList.remove('sel')); document.getElementById('st-'+id)?.classList.add('sel'); checkS1(); }
+function checkS1(){ document.getElementById('step1Btn').disabled=!(bk.workerId&&bk.service); }
+
+// ── CALENDAR JS ──
+let calYear, calMonth;
+
+function initCal(){
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  renderCal();
+}
+
+function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCal(); }
+function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCal(); }
+
+function renderCal(){
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('calMonthLabel').textContent = months[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('calGrid');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const firstDay = new Date(calYear, calMonth, 1);
+  // Monday=0 offset
+  let startOffset = firstDay.getDay() - 1; if(startOffset < 0) startOffset = 6;
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  let html = '';
+  for(let i=0; i<startOffset; i++) html += '<div class="cal-day cal-empty"></div>';
+  for(let d=1; d<=daysInMonth; d++){
+    const date = new Date(calYear, calMonth, d);
+    const dow = date.getDay(); // 0=Sun, 6=Sat
+    const isWeekend = dow===0 || dow===6;
+    const isPast = date < today;
+    const ymd = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday = date.getTime()===today.getTime();
+    const isSel = bk.date===ymd;
+    let cls = 'cal-day';
+    if(isWeekend || isPast) cls += ' cal-weekend cal-disabled';
+    else if(isSel) cls += ' cal-selected';
+    else if(isToday) cls += ' cal-today';
+    html += `<div class="${cls}" ${(!isWeekend&&!isPast)?`onclick="selectCalDay('${ymd}')"`:''}>${d}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function selectCalDay(ymd){
+  bk.date = ymd; bk.time = null;
+  renderCal();
+  // Show label
+  const [y,m,d] = ymd.split('-');
+  const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  document.getElementById('selectedDateLabel').textContent = d + ' ' + months[parseInt(m)-1] + ' ' + y;
+  document.getElementById('slotsSection').style.display = 'block';
+  document.getElementById('step2Btn').disabled = true;
+  renderSlots();
+}
+
+function onDateChange(){
+  bk.date=null; bk.time=null;
+  document.getElementById('step2Btn').disabled=true;
+}
+
+function renderSlots(){
+  const booked=(DB.get('appointments')||[]).filter(a=>a.date===bk.date&&a.workerId===bk.workerId&&a.status!=='cancelled').map(a=>a.time);
+  document.getElementById('slotsGrid').innerHTML=SLOTS.map(t=>`
+    <button class="slot-btn${booked.includes(t)?' ':bk.time===t?' sel':''}" ${booked.includes(t)?'disabled':''} onclick="selSlot('${t}')">${t}</button>`).join('');
+}
+
+function selSlot(t){ bk.time=t; renderSlots(); document.getElementById('step2Btn').disabled=false; }
+
+function goStep(n){
+  [1,2,3].forEach(i=>document.getElementById('bookStep'+i).style.display=i===n?'block':'none');
+  renderSteps(n);
+  if(n===2){ bk.date=null; bk.time=null; document.getElementById('slotsSection').style.display='none'; document.getElementById('step2Btn').disabled=true; initCal(); }
+  if(n===3) renderSummary();
+}
+
+function renderSummary(){
+  const w=(DB.get('users')||[]).find(u=>u.id===bk.workerId);
+  document.getElementById('bookSummary').innerHTML=`
+    <div class="summary-row"><span class="key">Expert</span><span>${w?.name||'—'}</span></div>
+    <div class="summary-row"><span class="key">Service</span><span>${svcName(bk.service)}</span></div>
+    <div class="summary-row"><span class="key">Date</span><span>${bk.date}</span></div>
+    <div class="summary-row"><span class="key">Heure</span><span>${bk.time}</span></div>`;
+}
+
+function confirmBooking(){
+  const notes=document.getElementById('bookNotes').value;
+  const appts=DB.get('appointments')||[];
+  const w=(DB.get('users')||[]).find(u=>u.id===bk.workerId);
+  appts.push({id:'a_'+Date.now(),clientId:CU.id,clientName:CU.name,clientEmail:CU.email,workerId:bk.workerId,workerName:w?.name||'Expert',service:bk.service,date:bk.date,time:bk.time,notes,status:'pending',createdAt:new Date().toISOString()});
+  DB.set('appointments',appts);
+  document.getElementById('bookNotes').value='';
+  // Email confirmation RDV au client
+  sendEmail({
+    to_name:  CU.name,
+    to_email: CU.email,
+    subject:  'Confirmation de votre rendez-vous — World2Blinded',
+    message:  'Bonjour ' + CU.name + ',\n\nVotre rendez-vous a bien été reçu et est en attente de confirmation.\n\n📅 Date : ' + bk.date + '\n🕐 Heure : ' + bk.time + '\n🛠 Service : ' + svcName(bk.service) + '\n\nNous vous confirmons votre rendez-vous dans les plus brefs délais.\n\nÀ bientôt,\nL\'équipe World2Blinded',
+    from_name: 'World2Blinded'
+  });
+  notify('✅ Rendez-vous réservé avec succès !');
+  showPanel('myAppts');
+}
+
+// ── CLIENT APPOINTMENTS ──
+function renderClientAppts(){
+  const appts=(DB.get('appointments')||[]).filter(a=>a.clientId===CU.id).reverse();
+  const el=document.getElementById('clientApptsList');
+  if(!appts.length){el.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>Aucun rendez-vous pour l\'instant.</p></div>';return;}
+  el.innerHTML=appts.map(a=>`
+    <div class="appt-card">
+      <div class="appt-top"><div><div style="font-weight:600;">${svcName(a.service)}</div><div style="font-size:0.75rem;color:var(--muted);">avec ${a.workerName||'Expert W2B'}</div></div>${bdg(a.status)}</div>
+      <div class="appt-meta"><span>📅 ${a.date}</span><span>🕐 ${a.time}</span></div>
+      ${a.notes?`<p style="font-size:0.82rem;color:var(--muted);background:rgba(255,255,255,0.025);padding:0.7rem;margin-bottom:0.7rem;">${a.notes}</p>`:''}
+      <div class="appt-actions">${a.status==='pending'?`<button class="btn-secondary btn-sm btn-refuse" onclick="cancelAppt('${a.id}')">Annuler</button>`:''}</div>
+    </div>`).join('');
+}
+
+function cancelAppt(id){
+  const a=DB.get('appointments')||[]; const i=a.findIndex(x=>x.id===id);
+  if(i>=0){a[i].status='cancelled';DB.set('appointments',a);}
+  renderClientAppts(); notify('Rendez-vous annulé.');
+}
+
+// ── CLIENT MESSAGES ──
+function renderContactPanel(){ renderClientMsgs(); }
+function sendMessage(){
+  const sub=document.getElementById('msgSubject').value.trim(), body=document.getElementById('msgBody').value.trim();
+  if(!sub||!body){notify('⚠️ Veuillez remplir tous les champs.');return;}
+  const msgs=DB.get('messages')||[];
+  msgs.push({id:'m_'+Date.now(),clientId:CU.id,clientName:CU.name,clientEmail:CU.email,subject:sub,body,status:'unread',createdAt:new Date().toISOString()});
+  DB.set('messages',msgs);
+  // Notifier World2Blinded (admin) du nouveau message
+  sendEmail({
+    to_name:  'World2Blinded',
+    to_email: 'world2blinded@gmail.com',
+    subject:  '📩 Nouveau message client — ' + sub,
+    message:  'Nouveau message de ' + CU.name + ' (' + CU.email + ') :\n\nSujet : ' + sub + '\n\n' + body,
+    from_name: CU.name,
+    reply_to: CU.email
+  });
+  document.getElementById('msgSubject').value=''; document.getElementById('msgBody').value='';
+  notify('✅ Message envoyé !'); renderClientMsgs(); buildSidebar();
+}
+function renderClientMsgs(){
+  const msgs=(DB.get('messages')||[]).filter(m=>m.clientId===CU.id).reverse();
+  const el=document.getElementById('clientMsgList');
+  if(!msgs.length){el.innerHTML='<div class="empty"><div class="empty-icon">✉️</div><p>Aucun message envoyé.</p></div>';return;}
+  el.innerHTML=msgs.map(m=>`
+    <div class="msg-item ${m.status==='unread'?'unread':''}">
+      <div class="msg-top"><div class="msg-subject">${m.subject}</div>${bdg(m.status)}</div>
+      <div class="msg-body">${m.body}</div><div class="msg-date">${fmt(m.createdAt)}</div>
+    </div>`).join('');
+}
+
+// ── ADMIN OVERVIEW ──
+function renderAdminOverview(){
+  const appts=DB.get('appointments')||[], msgs=DB.get('messages')||[];
+  const clients=(DB.get('users')||[]).filter(u=>u.role==='client'||u.role==='worker');
+  document.getElementById('adminStatsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num">${clients.length}</div><div class="stat-lbl">Clients</div></div>
+    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num">${appts.filter(a=>a.status==='pending').length}</div><div class="stat-lbl">RDV en attente</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num">${appts.filter(a=>a.status==='confirmed').length}</div><div class="stat-lbl">RDV confirmés</div></div>
+    <div class="stat-card"><div class="stat-icon">✉️</div><div class="stat-num">${msgs.filter(m=>m.status==='unread').length}</div><div class="stat-lbl">Non lus</div></div>`;
+  const ra=[...appts].reverse().slice(0,3);
+  document.getElementById('adminRecentAppts').innerHTML=ra.length
+    ?ra.map(a=>`<div class="appt-card"><div class="appt-top"><div><strong>${a.clientName}</strong><div style="font-size:0.75rem;color:var(--muted);">${svcName(a.service)}</div></div>${bdg(a.status)}</div><div class="appt-meta"><span>📅 ${a.date}</span><span>🕐 ${a.time}</span></div></div>`).join('')
+    :'<div class="empty"><div class="empty-icon">📅</div><p>Aucun rendez-vous.</p></div>';
+  const rm=[...msgs].reverse().slice(0,3);
+  document.getElementById('adminRecentMsgs').innerHTML=rm.length
+    ?rm.map(m=>`<div class="msg-item ${m.status==='unread'?'unread':''}"><div class="msg-top"><div class="msg-sender">${m.clientName}</div>${bdg(m.status)}</div><div class="msg-subject">${m.subject}</div><div class="msg-body">${m.body.substring(0,80)}${m.body.length>80?'...':''}</div></div>`).join('')
+    :'<div class="empty"><div class="empty-icon">✉️</div><p>Aucun message.</p></div>';
+}
+
+// ── ADMIN APPOINTMENTS ──
+function renderAdminAppts(){
+  const appts=(DB.get('appointments')||[]).reverse();
+  const el=document.getElementById('adminApptsList');
+  if(!appts.length){el.innerHTML='<div class="empty"><div class="empty-icon">📅</div><p>Aucun rendez-vous.</p></div>';return;}
+  el.innerHTML=appts.map(a=>`
+    <div class="appt-card">
+      <div class="appt-top"><div><div style="font-weight:600;">${a.clientName}</div><div style="font-size:0.75rem;color:var(--muted);">${a.clientEmail}</div></div>${bdg(a.status)}</div>
+      <div class="appt-meta"><span>🛠 ${svcName(a.service)}</span><span>📅 ${a.date}</span><span>🕐 ${a.time}</span></div>
+      ${a.notes?`<p style="font-size:0.82rem;color:var(--muted);background:rgba(255,255,255,0.025);padding:0.7rem;margin-bottom:0.75rem;">${a.notes}</p>`:''}
+      <div class="appt-actions">
+        ${a.status==='pending'?`<button class="btn-primary btn-sm btn-confirm" onclick="adminSetAppt('${a.id}','confirmed')">✓ Confirmer</button><button class="btn-primary btn-sm btn-refuse" onclick="adminSetAppt('${a.id}','cancelled')">✗ Refuser</button>`:''}
+        ${a.status==='confirmed'?`<button class="btn-primary btn-sm btn-complete" onclick="adminSetAppt('${a.id}','completed')">✓ Terminé</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function adminSetAppt(id,status){
+  const a=DB.get('appointments')||[]; const i=a.findIndex(x=>x.id===id);
+  if(i>=0){
+    a[i].status=status; DB.set('appointments',a);
+    const appt = a[i];
+    if(status === 'confirmed') {
+      sendEmail({
+        to_name:  appt.clientName,
+        to_email: appt.clientEmail,
+        subject:  'Votre rendez-vous est confirmé — World2Blinded',
+        message:  'Bonjour ' + appt.clientName + ',\n\n✅ Votre rendez-vous a été confirmé !\n\n📅 Date : ' + appt.date + '\n🕐 Heure : ' + appt.time + '\n🛠 Service : ' + svcName(appt.service) + '\n\nNous avons hâte de travailler avec vous !\n\nÀ bientôt,\nL\'équipe World2Blinded',
+        from_name: 'World2Blinded'
+      });
+    } else if(status === 'cancelled') {
+      sendEmail({
+        to_name:  appt.clientName,
+        to_email: appt.clientEmail,
+        subject:  'Mise à jour de votre rendez-vous — World2Blinded',
+        message:  'Bonjour ' + appt.clientName + ',\n\nNous vous informons que votre rendez-vous du ' + appt.date + ' à ' + appt.time + ' a été annulé.\n\nN\'hésitez pas à reprendre un nouveau rendez-vous sur notre plateforme.\n\nCordialement,\nL\'équipe World2Blinded',
+        from_name: 'World2Blinded'
+      });
+    }
+  }
+  renderAdminAppts(); renderAdminOverview(); notify('✅ Statut mis à jour.');
+}
+
+// ── ADMIN MESSAGES ──
+function renderAdminMsgs(){
+  const msgs=(DB.get('messages')||[]).reverse();
+  const el=document.getElementById('adminMsgList');
+  if(!msgs.length){el.innerHTML='<div class="empty"><div class="empty-icon">✉️</div><p>Aucun message reçu.</p></div>';return;}
+  el.innerHTML=msgs.map(m=>`
+    <div class="msg-item ${m.status==='unread'?'unread':''}" onclick="markRead('${m.id}')">
+      <div class="msg-top"><div><div class="msg-sender">${m.clientName}</div><div class="msg-email">${m.clientEmail}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">${bdg(m.status)}<span class="msg-date">${fmt(m.createdAt)}</span></div>
+      </div>
+      <div class="msg-subject">${m.subject}</div>
+      <div class="msg-body">${m.body}</div>
+    </div>`).join('');
+}
+
+function markRead(id){
+  const msgs=DB.get('messages')||[]; const i=msgs.findIndex(m=>m.id===id);
+  if(i>=0&&msgs[i].status==='unread'){msgs[i].status='read';DB.set('messages',msgs);}
+  renderAdminMsgs(); buildSidebar();
+}
+
+// ── ADMIN CLIENTS ──
+function renderAdminClients(){
+  const users=(DB.get('users')||[]).filter(u=>u.role!=='admin');
+  const appts=DB.get('appointments')||[];
+  const el=document.getElementById('adminClientsTable');
+  if(!users.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>Aucun client inscrit.</p></div>';return;}
+  el.innerHTML=`<table>
+    <tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Inscrit le</th><th>RDV</th></tr>
+    ${users.map(u=>`<tr>
+      <td><strong>${u.name}</strong></td>
+      <td style="color:var(--muted);">${u.email}</td>
+      <td>${bdg(u.role==='worker'?'confirmed':'read')}</td>
+      <td style="color:var(--muted);">${fmt(u.createdAt)}</td>
+      <td>${appts.filter(a=>a.clientId===u.id).length}</td>
+    </tr>`).join('')}
+  </table>`;
+}
+
+// ── TOAST ──
+let toastT;
+function notify(m){ const el=document.getElementById('toast'); el.textContent=m; el.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>el.style.display='none',3200); }
+
+// ── KEYBOARD ──
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter') return;
+  if(document.getElementById('authPage').style.display!=='none'){
+    if(document.getElementById('loginSection').style.display!=='none') handleLogin();
+    else handleRegister();
+  }
+});
+
+// ── INIT ──
+if(CU) loadDash();
+
+/* ==================== INDEX JS ==================== */
+(function() {
+  // Language switcher
+  window.currentLang = 'fr';
+  window.setLang = function(lang) {
+    window.currentLang = lang;
+    localStorage.setItem('w2b_lang', lang);
+    var indexPage = document.getElementById('pg-index') || document;
+    indexPage.querySelectorAll('.lang-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.textContent.trim() === lang.toUpperCase());
+    });
+    document.documentElement.lang = lang;
+    indexPage.querySelectorAll('[data-fr]').forEach(function(el) {
+      var text = el.getAttribute('data-' + lang);
+      if (text) el.innerHTML = text;
+    });
+    document.title = lang === 'fr'
+      ? 'World2Blinded — Agence de Copywriting Premium'
+      : 'World2Blinded — Premium Copywriting Agency';
+    indexPage.querySelectorAll('.stat-num').forEach(function(el) {
+      if (el.textContent.trim() === '3 ans' && lang === 'en') el.textContent = '3 yrs';
+      if (el.textContent.trim() === '3 yrs' && lang === 'fr') el.textContent = '3 ans';
+    });
+  };
+
+  // Restore saved language on load
+  (function() {
+    var saved = localStorage.getItem('w2b_lang') || 'fr';
+    window.currentLang = saved;
+    window.setLang(saved);
+  })();
+
+  // Fade-in on scroll
+  (function() {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(function(el) { obs.observe(el); });
+  })();
+
+  // Nav scroll effect
+  window.addEventListener('scroll', function() {
+    var navEl = document.querySelector('#pg-index nav');
+    if (navEl) {
+      navEl.style.borderBottomColor = window.scrollY > 50 ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.05)';
+    }
+  });
+})();
+
+/* ==================== ROUTER ==================== */
+var ROUTES = {
+  "index.html":               "index",
+  "index.html#services":      "index",
+  "index.html#hero":          "index",
+  "index.html#contact":       "index",
+  "index.html#different":     "index",
+  "index.html#why":           "index",
+  "index.html#stats":         "index",
+  "dashboard.html":           "dashboard",
+  "service-copywriting.html": "copywriting",
+  "service-strategie.html":   "strategie",
+  "service-siteweb.html":     "siteweb",
+  "service-reseaux.html":     "reseaux",
+  "reseau-reseau.html":       "reseaux",
+  "reseau-reseau_html.html":  "reseaux"
+};
+
+function navigate(pid, hash) {
+  document.querySelectorAll(".w2b-page").forEach(function(p) {
+    p.style.display = "none";
+  });
+  var page = document.getElementById("pg-" + pid);
+  if (!page) { page = document.getElementById("pg-index"); pid = "index"; }
+  page.style.display = "block";
+  window.scrollTo(0, 0);
+
+  // Re-init FAQ for service pages
+  var servicePids = ["copywriting", "strategie", "siteweb", "reseaux"];
+  if (servicePids.indexOf(pid) !== -1) {
+    page.querySelectorAll(".faq-item").forEach(function(item) {
+      var clone = item.cloneNode(true);
+      item.parentNode.replaceChild(clone, item);
+    });
+    page.querySelectorAll(".faq-item").forEach(function(item) {
+      item.addEventListener("click", function() {
+        var isOpen = item.classList.contains("open");
+        page.querySelectorAll(".faq-item").forEach(function(i) { i.classList.remove("open"); });
+        if (!isOpen) item.classList.add("open");
+      });
+    });
+  }
+
+  // When going back to index, re-apply current language
+  if (pid === "index" && window.setLang) {
+    window.setLang(localStorage.getItem('w2b_lang') || window.currentLang || "fr");
+  }
+
+  if (hash) {
+    setTimeout(function() {
+      var el = page.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }
+}
+
+// Use capture:true so this fires BEFORE any other handler
+document.addEventListener("click", function(e) {
+  var a = e.target.closest("a");
+  if (!a) return;
+  var href = a.getAttribute("href");
+  if (!href || href.startsWith("http") || href.startsWith("mailto") || href.startsWith("tel")) return;
+
+  // Strip any leading ./ or /
+  href = href.replace(/^\.?\//, "");
+
+  var parts = href.split("#");
+  var path  = parts[0];
+  var hash  = parts[1] ? "#" + parts[1] : "";
+  var pid   = ROUTES[path];
+
+  if (pid) {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(pid, hash);
+  } else if (!path && hash) {
+    e.preventDefault();
+    e.stopPropagation();
+    var cur = document.querySelector(".w2b-page[style*=\"display:block\"]");
+    if (!cur) cur = document.getElementById("pg-index");
+    if (cur) {
+      var el = cur.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+}, true);
+</script>
+
+</body>
+</html>
